@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>Electrium </title>
+    <title>Electrium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
@@ -33,10 +33,10 @@
             user-select: none;
         }
 
-        /* --- LOADING SCREEN --- */
+        /* --- LOADING SCREEN (Loader) --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #000000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.5s ease-out;
         }
         .loader-logo { font-size: 60px; color: var(--gold); margin-bottom: 20px; animation: pulseLogo 1.5s infinite; }
@@ -45,23 +45,50 @@
         .progress-bar { width: 0%; height: 100%; background: var(--gold); box-shadow: 0 0 15px var(--gold); transition: width 0.1s linear; }
         @keyframes pulseLogo { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* --- NOTIFICATION --- */
+        /* Marka Yazısı CSS */
+        .brand-text {
+            font-size: 10px;
+            color: white;
+            opacity: 0.7; 
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- NOTIFICATION (UYARI) DÜZELTİLDİ --- */
         #drop-notification {
-            position: fixed; top: 10%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; text-align: center; background: rgba(0,0,0,0.95); padding: 15px 0; 
-            border-top: 1px solid white; border-bottom: 1px solid white; border-radius: 10px;
-            font-family: 'Orbitron'; font-weight: 900; font-size: 16px; color: white;
-            text-shadow: 0 0 10px currentColor; pointer-events: none; opacity: 0; z-index: 9999;
+            position: fixed; top: 12%; left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 70%; 
+            text-align: center; 
+            background: rgba(0,0,0,0.95); 
+            padding: 10px 0; 
+            border: 1px solid white; 
+            border-radius: 8px; 
+            font-family: 'Orbitron'; 
+            font-weight: 900; 
+            font-size: 13px; 
+            color: white;
+            pointer-events: none; 
+            opacity: 0; 
+            z-index: 9999;
             transition: opacity 0.3s;
         }
-        #drop-notification.show { animation: popIn 3s forwards; }
-        @keyframes popIn { 0% { opacity:0; transform:translate(-50%, -30%); } 10% { opacity:1; transform:translate(-50%, -50%); } 90% { opacity:1; } 100% { opacity:0; transform:translate(-50%, -70%); } }
+        /* Bildirim süresi 2 saniyeye düşürüldü */
+        #drop-notification.show { animation: popIn 2s forwards; }
+        @keyframes popIn { 
+            0% { opacity:0; transform:translate(-50%, -30%); } 
+            10% { opacity:1; transform:translate(-50%, -50%); } 
+            90% { opacity:1; } 
+            100% { opacity:0; transform:translate(-50%, -70%); } 
+        }
 
         /* --- HEADER --- */
         .header {
             padding: 15px; display: flex; justify-content: space-between; align-items: center;
             background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border); z-index: 50;
-            padding-top: env(safe-area-inset-top); /* iPhone Notch Fix */
+            padding-top: env(safe-area-inset-top);
         }
         .stat-group { display: flex; gap: 8px; font-size: 12px; font-weight: bold; }
         .stat-pill { 
@@ -74,14 +101,18 @@
         .page {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             padding: 20px; box-sizing: border-box; overflow-y: auto; 
-            padding-bottom: 100px; /* Navbar boşluğu */
+            padding-bottom: 100px;
             display: none; opacity: 0; transition: opacity 0.2s;
-            -webkit-overflow-scrolling: touch; /* iOS Smooth Scroll */
+            -webkit-overflow-scrolling: touch;
         }
         .page.active { display: flex; flex-direction: column; opacity: 1; }
 
         /* --- HOME --- */
-        .home-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 400px; }
+        .home-center { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            position: relative; 
+            min-height: 400px; 
+        }
         .score-val { font-family: 'Orbitron'; font-size: 42px; font-weight: 900; text-shadow: 0 0 20px var(--gold); margin-top: 20px;}
         .reactor {
             width: 260px; height: 260px; position: relative; display: flex; justify-content: center; align-items: center;
@@ -101,18 +132,42 @@
         .skin-void .bolt-svg { fill: white; filter: invert(1) drop-shadow(0 0 10px white); }
         .skin-magma .bolt-svg { fill: #ff4500; filter: drop-shadow(0 0 20px #ff4500); animation: pulse 1s infinite; }
         .skin-ice .bolt-svg { fill: #aeeeff; filter: drop-shadow(0 0 15px cyan); }
-        .skin-gold .bolt-svg { fill: #ffd700; filter: drop-shadow(0 0 15px #b8860b); }
+        .skin-gold .bolt-svg { fill: #F2D700; filter: drop-shadow(0 0 15px #b8860b); }
         .skin-plasma .bolt-svg { fill: var(--purple); filter: drop-shadow(0 0 20px var(--purple)); }
         .skin-matrix .bolt-svg { fill: #0f0; filter: drop-shadow(0 0 10px #0f0); stroke: black; stroke-width: 1px; }
+
+        /* YENİ RGB AURA SKIN */
+        .skin-rgb .bolt-svg {
+            animation: rgbRotate 5s linear infinite;
+        }
+        @keyframes rgbRotate {
+            0% { fill: #ff0000; filter: drop-shadow(0 0 15px #ff0000); }
+            16% { fill: #ff7f00; filter: drop-shadow(0 0 15px #ff7f00); }
+            33% { fill: #ffff00; filter: drop-shadow(0 0 15px #ffff00); }
+            50% { fill: #00ff00; filter: drop-shadow(0 0 15px #00ff00); }
+            66% { fill: #0000ff; filter: drop-shadow(0 0 15px #0000ff); }
+            83% { fill: #4b0082; filter: drop-shadow(0 0 15px #4b0082); }
+            100% { fill: #ff0000; filter: drop-shadow(0 0 15px #ff0000); }
+        }
 
         @keyframes rot { to { transform: rotate(360deg); } }
         @keyframes rotRev { to { transform: rotate(-360deg); } }
         @keyframes pulse { 50% { transform: scale(1.05); } }
 
-        /* --- EVENT BTNS --- */
-        .event-btns { position: absolute; top: 0; right: 10px; z-index: 60; }
-        .event-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 2px solid var(--gold); display: flex; justify-content: center; align-items: center; color: var(--gold); font-size: 18px; cursor: pointer; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-5px);} 60% {transform: translateY(-3px);} }
+        /* --- EVENT BTNS (Booster kaldırıldı, sadece Daily kaldı) --- */
+        .event-btns { 
+            position: absolute; top: 0; left: 0; width: 100%; 
+            display: flex; justify-content: flex-end; 
+            padding: 10px;
+            z-index: 60; 
+        }
+        .event-btn { 
+            width: 45px; height: 45px; border-radius: 50%; background: rgba(0,0,0,0.6); 
+            border: 2px solid var(--gold); display: flex; justify-content: center; 
+            align-items: center; color: var(--gold); font-size: 18px; cursor: pointer; 
+        }
+        /* BOOSTER CSS KALDIRILDI */
+        .booster-timer, .event-btn#boosterBtn { display: none !important; }
 
         /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -145,6 +200,7 @@
         }
         .btn-buy.blue { background: var(--blue); }
         .btn-buy.purple { background: var(--purple); color: white; }
+        .btn-buy.green { background: var(--green); color: black; }
         .btn-buy:disabled { background: #333; color: #666; cursor: not-allowed; }
 
         /* Mining Box */
@@ -169,12 +225,12 @@
 
         /* Navbar */
         .navbar { 
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #0b0b0d; 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #000000; 
             border-top: 1px solid #222; display: flex; padding: 10px 0 10px 0; z-index: 90; 
-            padding-bottom: env(safe-area-inset-bottom); /* iPhone Alt Çizgi Koruması */
+            padding-bottom: env(safe-area-inset-bottom);
             height: 70px;
         }
-        .nav-btn { flex: 1; min-width: 50px; background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 10px; font-weight: bold; }
+        .nav-btn { flex: 1; min-width: 40px; background: none; border: none; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 10px; font-weight: bold; }
         .nav-btn i { font-size: 20px; margin-bottom: 2px;}
         .nav-btn.active { color: var(--gold); }
         
@@ -191,6 +247,9 @@
         <div class="loader-logo"><i class="fa-solid fa-bolt"></i></div>
         <div class="loader-text" id="loaderText">Oyun Yükleniyor...</div>
         <div class="progress-container"><div class="progress-bar" id="loadBar"></div></div>
+        <div class="brand-text">
+            <i class="fa-solid fa-rocket"></i> REACHSTUDIOS
+        </div>
     </div>
 
     <div id="drop-notification"></div>
@@ -229,6 +288,9 @@
         </div>
         <div class="stat-group">
             <div class="stat-pill" style="color:white; border-color:rgba(255,255,255,0.3);"><i class="fa-solid fa-key"></i> <span id="kTotal">0</span></div>
+            <div class="stat-pill" onclick="shareGame()" style="cursor:pointer; padding: 5px 8px;">
+                <i class="fa-solid fa-share-nodes"></i>
+            </div>
             <div class="stat-pill" onclick="toggleSettings()" style="cursor:pointer; padding: 5px 8px;">
                 <div id="headerAvatar" style="width:20px; height:20px; border-radius:50%; background:#444; background-size:cover; margin-right:5px; border:1px solid white; display:none;"></div>
                 <i class="fa-solid fa-gear"></i>
@@ -239,7 +301,10 @@
     <div class="viewport">
         <div id="page-home" class="page active">
             <div class="home-center">
-                <div class="event-btns"><div class="event-btn" onclick="openDaily()"><i class="fa-solid fa-calendar-check"></i></div></div>
+                <div class="event-btns">
+                    <div class="event-btn" onclick="openDaily()"><i class="fa-solid fa-calendar-check"></i></div>
+                </div>
+                
                 <div class="score-val" id="mainScore">0</div>
                 <div style="color:#666; font-size:12px; letter-spacing:2px; margin-bottom:20px;">VOLTAJ</div>
                 <div class="reactor" id="tapBtn">
@@ -268,25 +333,43 @@
             <div id="factoryList" class="card-list"></div>
         </div>
 
+        <div id="page-wallet" class="page">
+            <h2 style="color:var(--gold)">Cüzdan Yönetimi</h2>
+            
+            <div class="std-card" style="border-color:var(--blue); background:rgba(0,0,0,0.3); margin-bottom: 15px;">
+                <div style="display:flex; align-items:center;">
+                    <div class="icon-box" style="color:var(--blue)"><i class="fa-solid fa-atom"></i></div>
+                    <div class="info-box">
+                        <span class="name-txt">Dönüştürülebilir Electrium</span>
+                        <span class="sub-txt" id="walletElectriumDisp">0.0000 E</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="std-card" style="border-color:var(--green); background:rgba(0,0,0,0.3); margin-bottom: 25px;">
+                <div style="display:flex; align-items:center;">
+                    <div class="icon-box" style="color:var(--green)"><i class="fa-solid fa-coins"></i></div>
+                    <div class="info-box">
+                        <span class="name-txt">Dönüşüm Oranı</span>
+                        <span class="sub-txt">0.1 Electrium = 1 TL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="coming-soon" style="min-height: 200px; padding-top: 50px;">
+                <i class="fa-solid fa-cash-register" style="font-size:50px; color:#333; margin-bottom:20px;"></i>
+                <h2>ÇEKİM SİSTEMİ ÇOK YAKINDA</h2>
+                <p style="text-align:center; color:#666;">Cüzdan bağlantısı ve Electrium çekim işlemleri bu sayfada aktif olacaktır.</p>
+            </div>
+        </div>
+
         <div id="page-chest" class="page">
-            <h2 style="color:var(--purple)">Kasa Dairesi</h2>
+            <h2 style="color:var(--purple)">Kasalar</h2>
             <div style="display:flex; justify-content:space-around; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:20px;">
                 <span style="color:#aaa"><i class="fa-solid fa-key"></i> <span id="k1">0</span></span><span style="color:var(--blue)"><i class="fa-solid fa-key"></i> <span id="k2">0</span></span><span style="color:var(--purple)"><i class="fa-solid fa-key"></i> <span id="k3">0</span></span>
             </div>
-            <div class="card-list">
-                <div class="std-card">
-                    <div style="display:flex; align-items:center;"><div class="icon-box"><i class="fa-solid fa-box"></i></div><div><span class="name-txt">Tedarik</span><span class="sub-txt">1 Std. Anahtar</span></div></div>
-                    <button class="btn-buy" onclick="openChest(1)">AÇ</button>
+            <div class="card-list" id="chestList">
                 </div>
-                <div class="std-card" style="border-color:var(--blue)">
-                    <div style="display:flex; align-items:center;"><div class="icon-box" style="color:var(--blue)"><i class="fa-solid fa-box-open"></i></div><div><span class="name-txt" style="color:var(--blue)">İyonik</span><span class="sub-txt">1 Siber Anahtar</span></div></div>
-                    <button class="btn-buy blue" onclick="openChest(2)">AÇ</button>
-                </div>
-                <div class="std-card" style="border-color:var(--purple)">
-                    <div style="display:flex; align-items:center;"><div class="icon-box" style="color:var(--purple)"><i class="fa-solid fa-star"></i></div><div><span class="name-txt" style="color:var(--purple)">Yıldız</span><span class="sub-txt">1 Plazma Anahtar</span></div></div>
-                    <button class="btn-buy purple" onclick="openChest(3)">AÇ</button>
-                </div>
-            </div>
             <div id="chestMsg" style="text-align:center; font-weight:bold; margin-top:20px; height:20px;"></div>
         </div>
 
@@ -295,16 +378,17 @@
         <div id="page-tasks" class="page">
             <div class="coming-soon">
                 <i class="fa-solid fa-lock" style="font-size:50px; color:#333; margin-bottom:20px;"></i>
-                <h2>ÇOK YAKINDA</h2>
+                <h2>ÇEKİRDEK GÖREVLERİ ÇOK YAKINDA</h2>
                 <p style="text-align:center; color:#666;">Görev sistemi yakında aktif olacak.</p>
             </div>
         </div>
     </div>
 
     <div class="navbar">
-        <button class="nav-btn active" onclick="nav('home')"><i class="fa-solid fa-bolt"></i><span>Oyun</span></button>
+        <button class="nav-btn active" onclick="nav('home')"><i class="fa-solid fa-bolt"></i><span>Santral</span></button>
         <button class="nav-btn" onclick="nav('market')"><i class="fa-solid fa-cart-shopping"></i><span>Pazar</span></button>
         <button class="nav-btn" onclick="nav('core')"><i class="fa-solid fa-atom"></i><span>Çekirdek</span></button>
+        <button class="nav-btn" onclick="nav('wallet')"><i class="fa-solid fa-wallet"></i><span>Cüzdan</span></button>
         <button class="nav-btn" onclick="nav('chest')"><i class="fa-solid fa-box"></i><span>Kasa</span></button>
         <button class="nav-btn" onclick="nav('skins')"><i class="fa-solid fa-shirt"></i><span>Skin</span></button>
         <button class="nav-btn" onclick="nav('tasks')"><i class="fa-solid fa-list-check"></i><span>Görev</span></button>
@@ -312,83 +396,487 @@
 
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
-        let game = { volt:0, electrium:0, keys:{std:0,cyber:0,plasma:0}, energy:1000, maxEnergy:1000, level:1, pps:0, e_rate:0.0001, miningActive:false, miningStart:0, items:{}, factory:{}, skins:['skin-def'], activeSkin:'skin-def', name:"Oyuncu", avatar:null, settings:{sound:true, haptic:true}, daily:{last:0, streak:0}, stats:{totalTaps:0, maxVolt:0}, badges:[] };
+        const STORAGE_KEY = 'electrium_v36_final'; 
+        const FREE_CHEST_COOLDOWN_MS = 12 * 3600 * 1000; // 12 saat
 
-        // DATABASES
+        // Oyun Durumu Başlangıcı (Booster kaldırıldı, freeChest eklendi)
+        let game = { volt:0, electrium:0, keys:{std:0,cyber:0,plasma:0}, energy:1000, maxEnergy:1000, level:1, pps:0, e_rate:0.0001, miningActive:false, miningStart:0, items:{}, factory:{}, skins:['skin-def'], activeSkin:'skin-def', name:"", avatar:null, settings:{sound:true, haptic:true}, daily:{last:0, streak:0}, stats:{totalTaps:0, maxVolt:0}, badges:[], 
+            freeChestLastOpen: 0 // Yeni sandık değişkeni
+        };
+
+        // DATABASES (Pazar geliştirildi)
         const MARKET_DB = [
-            {id:'m1', name:'Kablo Seti', cost:100, gain:1, icon:'fa-plug'}, {id:'m2', name:'Pil Paketi', cost:500, gain:5, icon:'fa-battery-full'}, {id:'m3', name:'Dinamo', cost:1500, gain:12, icon:'fa-bicycle'},
-            {id:'m4', name:'Güneş Paneli', cost:5000, gain:45, icon:'fa-solar-panel'}, {id:'m5', name:'Rüzgar Türbini', cost:12000, gain:100, icon:'fa-fan'}, {id:'m6', name:'Trafo', cost:30000, gain:250, icon:'fa-charging-station'},
-            {id:'m7', name:'Hidroelektrik', cost:75000, gain:600, icon:'fa-water'}, {id:'m8', name:'Jeotermal', cost:200000, gain:1500, icon:'fa-volcano'}, {id:'m9', name:'Şehir Şebekesi', cost:500000, gain:4000, icon:'fa-city'},
-            {id:'m10', name:'Tesla Kulesi', cost:1000000, gain:9000, icon:'fa-broadcast-tower'}, {id:'m11', name:'Uzay İstasyonu', cost:5000000, gain:25000, icon:'fa-satellite'}, {id:'m12', name:'Dyson Küresi', cost:20000000, gain:100000, icon:'fa-sun'}
+            {id:'m1', name:'Kablo Seti', base_cost:100, base_gain:1, icon:'fa-plug'}, {id:'m2', name:'Pil Paketi', base_cost:500, base_gain:5, icon:'fa-battery-full'}, {id:'m3', name:'Dinamo', base_cost:1500, base_gain:12, icon:'fa-bicycle'},
+            {id:'m4', name:'Güneş Paneli', base_cost:5000, base_gain:45, icon:'fa-solar-panel'}, {id:'m5', name:'Rüzgar Türbini', base_cost:12000, base_gain:100, icon:'fa-fan'}, {id:'m6', name:'Trafo', base_cost:30000, base_gain:250, icon:'fa-charging-station'},
+            {id:'m7', name:'Hidroelektrik', base_cost:75000, base_gain:600, icon:'fa-water'}, {id:'m8', name:'Jeotermal', base_cost:200000, base_gain:1500, icon:'fa-volcano'}, {id:'m9', name:'Şehir Şebekesi', base_cost:500000, base_gain:4000, icon:'fa-city'},
+            {id:'m10', name:'Tesla Kulesi', base_cost:1000000, base_gain:9000, icon:'fa-broadcast-tower'}, {id:'m11', name:'Uzay İstasyonu', base_cost:5000000, base_gain:25000, icon:'fa-satellite'}, {id:'m12', name:'Dyson Küresi', base_cost:20000000, base_gain:100000, icon:'fa-sun'},
+             // Yeni End Game Pazarları
+            {id:'m13', name:'Evren Motoru', base_cost:100000000, base_gain:500000, icon:'fa-gears'}, 
+            {id:'m14', name:'Kuantum Jeneratörü', base_cost:500000000, base_gain:2500000, icon:'fa-wave-square'}, 
+            {id:'m15', name:'Zaman Enerjisi', base_cost:1000000000, base_gain:5000000, icon:'fa-hourglass-half'}, 
         ];
         const FACTORY_DB = [
-            {id:'f1', name:'Sıvı Soğutma', cost:5000, gain:0.0001}, {id:'f2', name:'Uranyum', cost:15000, gain:0.0003}, {id:'f3', name:'Grafit Blok', cost:50000, gain:0.0010}, {id:'f4', name:'Türbin', cost:150000, gain:0.0040},
-            {id:'f5', name:'Füzyon Hücresi', cost:500000, gain:0.0150}, {id:'f6', name:'Parçacık Hızl.', cost:2000000, gain:0.0600}, {id:'f7', name:'Antimadde', cost:10000000, gain:0.3000}, {id:'f8', name:'Yapay Yıldız', cost:50000000, gain:1.5000}
+            // Çekirdek yükseltmeleri Electrium (E) ile alınıyor
+            {id:'f1', name:'Sıvı Soğutma', base_cost:1, cost_currency:'E', base_gain:0.0001}, {id:'f2', name:'Uranyum', base_cost:2, cost_currency:'E', base_gain:0.0003}, {id:'f3', name:'Grafit Blok', base_cost:5, cost_currency:'E', base_gain:0.0010}, {id:'f4', name:'Türbin', base_cost:10, cost_currency:'E', base_gain:0.0040},
+            {id:'f5', name:'Füzyon Hücresi', base_cost:25, cost_currency:'E', base_gain:0.0150}, {id:'f6', name:'Parçacık Hızl.', base_cost:50, cost_currency:'E', base_gain:0.0600}, {id:'f7', name:'Antimadde', base_cost:100, cost_currency:'E', base_gain:0.3000}, {id:'f8', name:'Yapay Yıldız', base_cost:250, cost_currency:'E', base_gain:1.5000}
         ];
         const SKINS_DB = [
             {id:'skin-def', name:'Klasik', cost:0}, {id:'skin-neon', name:'Neon Mavi', cost:50000}, {id:'skin-ruby', name:'Kızıl Yakut', cost:250000}, {id:'skin-toxin', name:'Zehirli Atık', cost:750000}, {id:'skin-void', name:'Kara Delik', cost:2000000},
-            {id:'skin-magma', name:'Magma', cost:5000000}, {id:'skin-ice', name:'Buzul', cost:7500000}, {id:'skin-gold', name:'Saf Altın', cost:10000000}, {id:'skin-plasma', name:'Plazma', cost:25000000}, {id:'skin-matrix', name:'Matrix', cost:50000000}
+            {id:'skin-magma', name:'Magma', cost:5000000}, {id:'skin-ice', name:'Buzul', cost:7500000}, {id:'skin-gold', name:'Saf Altın', cost:10000000}, {id:'skin-plasma', name:'Plazma', cost:25000000}, {id:'skin-matrix', name:'Matrix', cost:50000000},
+            {id:'skin-rgb', name:'RGB Aura', cost:100000000} 
         ];
         const BADGES_DB = [ {id:'b1',name:'Başlangıç',icon:'fa-baby',req:g=>g.stats.totalTaps>=100}, {id:'b2',name:'Tıklama Ustası',icon:'fa-hand-pointer',req:g=>g.stats.totalTaps>=10000}, {id:'b3',name:'Milyoner',icon:'fa-sack-dollar',req:g=>g.stats.maxVolt>=1000000}, {id:'b4',name:'Koleksiyoncu',icon:'fa-shirt',req:g=>g.skins.length>=3}, {id:'b5',name:'Nükleer Güç',icon:'fa-radiation',req:g=>g.e_rate>=0.0010}, {id:'b6',name:'Hacker',icon:'fa-user-secret',req:g=>g.keys.cyber>=5} ];
         const DAILY_REWARDS = [1000, 2500, 5000, 10000, 25000, 50000, 'CYBER_KEY'];
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function playSfx(t) { if(!game.settings.sound)return; if(audioCtx.state==='suspended')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); if(t==='tap'){o.type='triangle';o.frequency.setValueAtTime(200,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(800,audioCtx.currentTime+0.1);g.gain.setValueAtTime(0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.1);o.start();o.stop(audioCtx.currentTime+0.1);}else{o.type='sine';o.frequency.setValueAtTime(600,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(1200,audioCtx.currentTime+0.3);g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+0.3);o.start();o.stop(audioCtx.currentTime+0.3);} }
+        // SES EFEKTLERİ GÜNCELLENDİ (Kasa ve Günlük Ödül sesleri değişti)
+        function playSfx(t) { 
+            if(!game.settings.sound) return; 
+            if(audioCtx.state === 'suspended') audioCtx.resume(); 
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            
+            if (t === 'tap') { // Keskin ve kısa tap
+                o.type = 'sine';
+                o.frequency.setValueAtTime(600, audioCtx.currentTime); 
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.05);
+            } else if (t === 'drop') { // Genel Satın Alma/Ödül/Düşüş Sesi (Güçlendirme Sesi Artık BU)
+                o.type = 'sawtooth';
+                o.frequency.setValueAtTime(660, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.2);
+            } else if (t === 'chest_open') { // Kasa Açma Sesi (Yeni)
+                o.type = 'square';
+                o.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.1);
+                g.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.15);
+            } else if (t === 'daily_claim') { // Günlük Ödül Alma Sesi (Yeni)
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.3);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.4);
+            } else if (t === 'error') { // Hata/Yetersiz Bakiye Sesi
+                o.type = 'square';
+                o.frequency.setValueAtTime(150, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.15);
+            } else if (t === 'loader_start') { 
+                o.type = 'sine';
+                o.frequency.setValueAtTime(440, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.2);
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.3);
+            }
+        }
 
-        window.onload=()=>{ const b=document.getElementById('loadBar'),t=document.getElementById('loaderText'),s=document.getElementById('loader'); let w=0; const i=setInterval(()=>{ w+=Math.random()*20; if(w>100)w=100; b.style.width=w+'%'; if(w===100){clearInterval(i);setTimeout(()=>{s.style.opacity='0';setTimeout(()=>{s.style.display='none';initGame();},500);},500);} },100); };
+        // LEVELING LOGIC (PPS'i level'a göre hesaplar)
+        function calculateTotalPPS() {
+            let totalPPS = 0;
+            for (const id in game.items) {
+                const level = game.items[id];
+                const itemDB = MARKET_DB.find(x => x.id === id);
+                if (itemDB && level > 0) {
+                    // Kazanç Formülü: base_gain * (1 + 0.1 * (level - 1))
+                    const scaledGain = itemDB.base_gain * (1 + 0.1 * (level - 1));
+                    totalPPS += scaledGain;
+                }
+            }
+            game.pps = totalPPS;
+        }
 
+        // LOADER BAŞLANGIÇ (Süre 2 saniyeye düşürüldü)
+        window.onload=()=>{ 
+            playSfx('loader_start'); 
+
+            const b=document.getElementById('loadBar'),s=document.getElementById('loader'); 
+            let w=0; 
+            const minDuration = 2000; 
+            const startTime = Date.now();
+
+            const i=setInterval(()=>{ 
+                w+=Math.random()*40; 
+                if(w>100)w=100; 
+                b.style.width=w+'%'; 
+                
+                if(w===100 && (Date.now() - startTime >= minDuration)){
+                    clearInterval(i);
+                    setTimeout(()=>{s.style.opacity='0';setTimeout(()=>{s.style.display='none';initGame();},500);},500);
+                } else if (w < 100 && (Date.now() - startTime >= minDuration)) {
+                     w = 100;
+                }
+            },100); 
+        };
+
+        // OYUN BAŞLANGIÇ (INIT)
         function initGame() {
-            const s=localStorage.getItem('electrium_v17_1'); if(s)game={...game,...JSON.parse(s)};
+            const s=localStorage.getItem(STORAGE_KEY); 
+            if(s) {
+                game={...game,...JSON.parse(s)};
+                if (game.freeChestLastOpen === undefined) game.freeChestLastOpen = 0;
+            }
+            // Eski booster değişkenlerini temizle (Eğer eski kayıt varsa)
+            delete game.boosterActive;
+            delete game.boosterStart;
+            delete game.boosterCooldownEnd;
+
             if(!game.daily) game.daily={last:0,streak:0}; if(!game.stats) game.stats={totalTaps:0,maxVolt:0}; if(!game.badges) game.badges=[];
             document.getElementById('nameInput').value=game.name; document.getElementById('chkSound').checked=game.settings.sound; document.getElementById('chkHaptic').checked=game.settings.haptic;
-            updateUI(); renderAll(); applySkin(game.activeSkin); checkMining(); renderBadges();
-            setInterval(loop,1000); setInterval(()=>localStorage.setItem('electrium_v17_1',JSON.stringify(game)),5000);
+            
+            calculateTotalPPS(); 
+            updateUI(); 
+            renderAll(); 
+            applySkin(game.activeSkin); 
+            checkMining(); 
+            checkFreeChest(); // Yeni sandık kontrolü eklendi
+            renderBadges();
+            
+            setInterval(loop,1000); 
+            setInterval(checkFreeChest, 1000); // Ücretsiz sandık sayacını güncelle
+            setInterval(()=>localStorage.setItem(STORAGE_KEY,JSON.stringify(game)),5000);
         }
 
         function loop() {
-            if(game.pps>0)game.volt+=game.pps; const m=1000+(game.level-1)*200; if(game.energy<m){game.energy+=(1+game.level);if(game.energy>m)game.energy=m;} if(game.volt>game.stats.maxVolt)game.stats.maxVolt=game.volt; checkAchievements(); checkMining(); updateUI();
+            if(game.pps>0)game.volt+=game.pps; 
+            
+            const m=1000+(game.level-1)*200; 
+            if(game.energy<m){game.energy+=(1+game.level);if(game.energy>m)game.energy=m;} 
+            if(game.volt>game.stats.maxVolt)game.stats.maxVolt=game.volt; 
+            checkAchievements(); 
+            checkMining(); 
+            updateUI();
         }
 
+        // TIKLAMA FONKSİYONU (Booster kaldırıldı, Titreşim Kontrolü Eklendi)
         document.getElementById('tapBtn').addEventListener('click', (e)=>{
-            if(game.energy>0){ game.energy--; game.stats.totalTaps++; game.volt+=(1+game.pps*0.05); playSfx('tap'); if(game.settings.haptic&&tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light'); 
-            const r=Math.random(); let d=null,c="white",n=""; if(r<0.00001){d='plasma';n="PLAZMA";c="var(--purple)";}else if(r<0.0005){d='cyber';n="SİBER";c="var(--blue)";}else if(r<0.005){d='std';n="TEDARİK";c="#aaa";}
-            if(d){game.keys[d]++;showNotify(n+" ANAHTARI!",c);playSfx('drop');animateKey(e.clientX,e.clientY,c);} createFloat(e.clientX,e.clientY,"+1"); updateUI(); }
+            if(game.energy>0){ 
+                game.energy--; 
+                game.stats.totalTaps++; 
+                
+                let tapMultiplier = 1;
+                let tapGain = (1 + game.pps * 0.05) * tapMultiplier;
+                
+                game.volt += tapGain; 
+                
+                playSfx('tap'); 
+                // Tap Titreşim Eklendi/Kontrol Edildi
+                if(game.settings.haptic && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('black'); 
+                
+                const r=Math.random(); let d=null,c="white",n=""; 
+                if(r<0.00001){d='plasma';n="PLAZMA";c="var(--purple)";}else if(r<0.0003){d='cyber';n="SİBER";c="var(--blue)";}else if(r<0.005){d='std';n="TEDARİK";c="#aaa";}
+                
+                if(d){
+                    game.keys[d]++;
+                    showNotify(n+" ANAHTARI!",c);
+                    playSfx('drop');
+                    animateKey(e.clientX,e.clientY,c);
+                } 
+                
+                createFloat(e.clientX,e.clientY,`+${tapGain.toFixed(0)}`); 
+                updateUI(); 
+            }
         });
 
-        function buy(t,id) {
-            if(t==='m'){const i=MARKET_DB.find(x=>x.id===id);const c=game.items[id]||0;const cost=Math.floor(i.cost*Math.pow(1.2,c));if(game.volt>=cost){game.volt-=cost;game.items[id]=c+1;game.pps+=i.gain;renderAll();updateUI();}}
-            else{const i=FACTORY_DB.find(x=>x.id===id);const c=game.factory[id]||0;const cost=Math.floor(i.cost*Math.pow(1.5,c));if(game.volt>=cost){game.volt-=cost;game.factory[id]=c+1;game.e_rate+=i.gain;renderAll();updateUI();}}
+        // SATIN ALMA FONKSİYONU (Yükseltme sesi artık 'drop')
+        function buy(type, id) {
+            if (type === 'm') { // MARKET (Volt ile alınıyor)
+                const item = MARKET_DB.find(x => x.id === id);
+                const current_level = game.items[id] || 0;
+                const cost = Math.floor(item.base_cost * Math.pow(1.2, current_level));
+                
+                if (game.volt >= cost) {
+                    game.volt -= cost;
+                    game.items[id] = current_level + 1;
+                    calculateTotalPPS(); 
+                    renderAll(); 
+                    updateUI();
+                    playSfx('drop'); // Yükseltme sesi 'drop'
+                } else {
+                    showNotify("Yetersiz VOLTAJ!", "var(--red)");
+                    playSfx('error');
+                }
+            } else if (type === 'f') { // FACTORY (Electrium ile alınıyor)
+                const item = FACTORY_DB.find(x => x.id === id);
+                const current_level = game.factory[id] || 0;
+                const cost = item.base_cost * Math.pow(2.0, current_level); 
+
+                if (game.electrium >= cost) {
+                    game.electrium -= cost;
+                    game.factory[id] = current_level + 1;
+                    game.e_rate += item.base_gain; 
+                    renderAll(); 
+                    updateUI();
+                    playSfx('drop'); // Yükseltme sesi 'drop'
+                } else {
+                    showNotify("Yetersiz ELECTRIUM!", "var(--red)");
+                    playSfx('error');
+                }
+            }
         }
-        function buySkin(id){const s=SKINS_DB.find(x=>x.id===id);if(game.volt>=s.cost){game.volt-=s.cost;game.skins.push(id);renderAll();updateUI();}}
+        
+        function buySkin(id){
+            const s=SKINS_DB.find(x=>x.id===id);
+            if(game.volt>=s.cost){
+                game.volt-=s.cost;
+                game.skins.push(id);
+                renderAll();
+                updateUI();
+                playSfx('drop');
+            } else {
+                showNotify("Yetersiz VOLTAJ!", "var(--red)");
+                playSfx('error');
+            }
+        }
         function equip(id){game.activeSkin=id;applySkin(id);renderAll();}
         function applySkin(id){document.getElementById('skinContainer').className=id;}
-        function openChest(t){const k=t===1?'std':(t===2?'cyber':'plasma'),m=document.getElementById('chestMsg');if(game.keys[k]>0){game.keys[k]--;const g=Math.floor(1000*t*(1+Math.random()));game.volt+=g;m.innerText=`+${format(g)} VOLT`;m.style.color="var(--green)";playSfx('drop');updateUI();}else{m.innerText="ANAHTAR YOK";m.style.color="red";}}
+        
+        // KASA AÇMA FONKSİYONU GÜNCELLENDİ (Kasa Açma Sesi)
+        function openChest(type){
+            const m = document.getElementById('chestMsg');
+            m.innerText = "";
+            let keyType = null;
+            let multiplier = 0;
+
+            if (type === 'free') {
+                const now = Date.now();
+                if (now < game.freeChestLastOpen + FREE_CHEST_COOLDOWN_MS) {
+                    const remaining = (game.freeChestLastOpen + FREE_CHEST_COOLDOWN_MS) - now;
+                    const h = Math.floor(remaining / 3600000);
+                    const min = Math.floor((remaining % 3600000) / 60000);
+                    showNotify(`Sandık Hazır Değil! Kalan: ${h}s ${min}dk`, "var(--red)");
+                    playSfx('error');
+                    return;
+                }
+                
+                game.freeChestLastOpen = now;
+                const rewardType = Math.random() < 0.2 ? 'key' : 'volt';
+                let rewardAmount;
+                
+                if (rewardType === 'key') {
+                    game.keys.std++;
+                    m.innerText = `1 TEDARİK ANAHTARI!`;
+                    m.style.color = "var(--gold)";
+                    showNotify("Ücretsiz Anahtar!", "var(--gold)");
+                } else {
+                    rewardAmount = Math.floor(Math.random() * 1500) + 500;
+                    game.volt += rewardAmount;
+                    m.innerText = `+${format(rewardAmount)} VOLT`;
+                    m.style.color = "var(--green)";
+                    showNotify(`+${format(rewardAmount)} VOLT!`, "var(--green)");
+                }
+
+                playSfx('chest_open'); // Yeni kasa açma sesi
+                checkFreeChest(); 
+                updateUI();
+                return;
+            }
+            
+            // Normal Sandıklar
+            if (type === 'std') { keyType = 'std'; multiplier = 1; }
+            else if (type === 'cyber') { keyType = 'cyber'; multiplier = 5; }
+            else if (type === 'plasma') { keyType = 'plasma'; multiplier = 20; }
+            
+            if (keyType && game.keys[keyType] > 0) {
+                game.keys[keyType]--;
+                const g = Math.floor(1000 * multiplier * (1 + Math.random()));
+                game.volt += g;
+                m.innerText = `+${format(g)} VOLT`;
+                m.style.color = "var(--green)";
+                playSfx('chest_open'); // Yeni kasa açma sesi
+                updateUI();
+            } else if (keyType) {
+                m.innerText = "ANAHTAR YOK";
+                m.style.color = "red";
+                playSfx('error');
+            }
+        }
+        
+        // YENİ FONKSİYON: ÜCRETSİZ SANDIK KONTROLÜ
+        function checkFreeChest() {
+            const now = Date.now();
+            const btn = document.getElementById('freeChestBtn');
+            const timer = document.getElementById('freeChestTimer');
+            
+            if (!btn || !timer) return; 
+
+            if (now >= game.freeChestLastOpen + FREE_CHEST_COOLDOWN_MS) {
+                timer.innerText = "ŞİMDİ AÇ";
+                btn.disabled = false;
+                btn.innerText = "AÇ";
+                btn.className = "btn-buy green";
+            } else {
+                const remaining = (game.freeChestLastOpen + FREE_CHEST_COOLDOWN_MS) - now;
+                const h = Math.floor(remaining / 3600000);
+                const m = Math.floor((remaining % 3600000) / 60000);
+                const s = Math.floor((remaining % 60000) / 1000);
+
+                timer.innerText = `${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+                btn.disabled = true;
+                btn.innerText = "BEKLE";
+                btn.className = "btn-buy";
+            }
+        }
         
         function toggleMining(){if(game.miningActive){if(Date.now()-game.miningStart>=4*3600*1000){const e=(4*3600)*game.e_rate;game.electrium+=e;game.miningActive=false;alert(`+${e.toFixed(4)} E`);checkMining();}else alert("Çalışıyor!");}else{game.miningActive=true;game.miningStart=Date.now();checkMining();}}
         function checkMining(){const b=document.getElementById('mineBtn'),s=document.getElementById('mineStatus'),t=document.getElementById('mineTimer');if(!game.miningActive){s.innerText="HAZIR";s.style.color="var(--green)";t.innerText="04:00:00";b.innerText="BAŞLAT";b.className="btn-buy blue";}else{const r=(4*3600*1000)-(Date.now()-game.miningStart);if(r<=0){s.innerText="DOLDU";s.style.color="var(--gold)";t.innerText="00:00:00";b.innerText="TOPLA";b.className="btn-buy";}else{s.innerText="ÇALIŞIYOR";s.style.color="var(--blue)";const h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000),sc=Math.floor((r%60000)/1000);t.innerText=`${h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;b.innerText="AKTİF...";b.className="btn-buy off";}}}
 
+        // RENDERALL GÜNCELLENDİ (Pazar ve Kasa Listesi)
         function renderAll() {
-            const ml=document.getElementById('marketList'); ml.innerHTML=""; MARKET_DB.forEach(i=>{const c=game.items[i.id]||0;ml.innerHTML+=`<div class="std-card"><div style="display:flex;align-items:center;"><div class="icon-box"><i class="fa-solid ${i.icon}"></i></div><div class="info-box"><span class="name-txt">${i.name}</span><span class="sub-txt">+${i.gain} V/sn</span></div></div><button class="btn-buy" onclick="buy('m','${i.id}')">${format(Math.floor(i.cost*Math.pow(1.2,c)))}</button></div>`;});
-            const fl=document.getElementById('factoryList'); fl.innerHTML=""; FACTORY_DB.forEach(i=>{const c=game.factory[i.id]||0;fl.innerHTML+=`<div class="std-card"><div style="display:flex;align-items:center;"><div class="icon-box" style="color:var(--blue)"><i class="fa-solid fa-industry"></i></div><div class="info-box"><span class="name-txt">${i.name}</span><span class="sub-txt">+${i.gain} E/sn</span></div></div><button class="btn-buy blue" onclick="buy('f','${i.id}')">${format(Math.floor(i.cost*Math.pow(1.5,c)))} V</button></div>`;});
-            const sl=document.getElementById('skinList'); sl.innerHTML=""; SKINS_DB.forEach(s=>{const o=game.skins.includes(s.id),a=game.activeSkin===s.id, btn=a?`<button class="btn-buy" disabled>SEÇİLİ</button>`:o?`<button class="btn-buy blue" onclick="equip('${s.id}')">KUŞAN</button>`:`<button class="btn-buy" onclick="buySkin('${s.id}')">${format(s.cost)}</button>`; sl.innerHTML+=`<div class="std-card"><div style="display:flex;align-items:center;"><div class="skin-preview ${s.id}" style="width:50px;height:50px;display:flex;justify-content:center;align-items:center;margin-right:15px;border-radius:8px;background:rgba(0,0,0,0.3);"><svg class="bolt-svg" style="width:30px;height:30px" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div><span class="name-txt">${s.name}</span></div>${btn}</div>`;});
+            const ml=document.getElementById('marketList'); ml.innerHTML=""; 
+            MARKET_DB.forEach(i=>{
+                const current_level = game.items[i.id] || 0; 
+                const cost = Math.floor(i.base_cost * Math.pow(1.2, current_level)); 
+                const currentGain = i.base_gain * (1 + 0.1 * current_level);
+
+                ml.innerHTML+=`
+                    <div class="std-card">
+                        <div style="display:flex;align-items:center;">
+                            <div class="icon-box"><i class="fa-solid ${i.icon}"></i></div>
+                            <div class="info-box">
+                                <span class="name-txt">${i.name}</span>
+                                <span class="sub-txt">LVL ${current_level} | +${currentGain.toFixed(1)} V/sn</span> 
+                            </div>
+                        </div>
+                        <button class="btn-buy" onclick="buy('m','${i.id}')">${format(cost)} V</button>
+                    </div>`; 
+            });
+
+            const fl=document.getElementById('factoryList'); fl.innerHTML=""; 
+            FACTORY_DB.forEach(i=>{
+                const current_level = game.factory[i.id] || 0;
+                const cost = i.base_cost * Math.pow(2.0, current_level); 
+                const currentGain = (i.base_gain * (current_level + 1)).toFixed(4);
+
+                fl.innerHTML+=`
+                    <div class="std-card">
+                        <div style="display:flex;align-items:center;">
+                            <div class="icon-box" style="color:var(--blue)"><i class="fa-solid fa-industry"></i></div>
+                            <div class="info-box">
+                                <span class="name-txt">${i.name}</span>
+                                <span class="sub-txt">LVL ${current_level} | +${i.base_gain.toFixed(4)} E/sn</span>
+                            </div>
+                        </div>
+                        <button class="btn-buy blue" onclick="buy('f','${i.id}')">${cost.toFixed(2)} E</button>
+                    </div>`;
+            });
+            
+            // KASA LİSTESİ YENİDEN OLUŞTURULDU (Sandık düzeni için)
+            const chestList = document.getElementById('chestList');
+            if (chestList) {
+                chestList.innerHTML = `
+                    <div class="std-card" id="freeChestCard" style="border-color:var(--green)">
+                        <div style="display:flex; align-items:center;">
+                            <div class="icon-box" style="color:var(--green)"><i class="fa-solid fa-gift"></i></div>
+                            <div><span class="name-txt" style="color:var(--green)">Ücretsiz Hediye</span><span class="sub-txt" id="freeChestTimer">12:00:00</span></div>
+                        </div>
+                        <button class="btn-buy green" id="freeChestBtn" onclick="openChest('free')">AÇ</button>
+                    </div>
+                    <div class="std-card">
+                        <div style="display:flex; align-items:center;"><div class="icon-box"><i class="fa-solid fa-box"></i></div><div><span class="name-txt">Tedarik</span><span class="sub-txt">1 Std. Anahtar</span></div></div>
+                        <button class="btn-buy" onclick="openChest('std')">AÇ</button>
+                    </div>
+                    <div class="std-card" style="border-color:var(--blue)">
+                        <div style="display:flex; align-items:center;"><div class="icon-box" style="color:var(--blue)"><i class="fa-solid fa-box-open"></i></div><div><span class="name-txt" style="color:var(--blue)">İyonik</span><span class="sub-txt">1 Siber Anahtar</span></div></div>
+                        <button class="btn-buy blue" onclick="openChest('cyber')">AÇ</button>
+                    </div>
+                    <div class="std-card" style="border-color:var(--purple)">
+                        <div style="display:flex; align-items:center;"><div class="icon-box" style="color:var(--purple)"><i class="fa-solid fa-star"></i></div><div><span class="name-txt" style="color:var(--purple)">Yıldız</span><span class="sub-txt">1 Plazma Anahtar</span></div></div>
+                        <button class="btn-buy purple" onclick="openChest('plasma')">AÇ</button>
+                    </div>
+                `;
+            }
+            // Skins listesi (Aynı kaldı)
+            const sl=document.getElementById('skinList'); sl.innerHTML=""; 
+            SKINS_DB.forEach(s=>{
+                const o=game.skins.includes(s.id),a=game.activeSkin===s.id;
+                const btn = a ? `<button class="btn-buy" disabled>SEÇİLİ</button>` : o ? `<button class="btn-buy blue" onclick="equip('${s.id}')">KUŞAN</button>` : `<button class="btn-buy" onclick="buySkin('${s.id}')">${format(s.cost)} V</button>`; 
+                
+                const skinPreviewClass = `skin-preview ${s.id}`;
+
+                sl.innerHTML+=`<div class="std-card">
+                    <div style="display:flex;align-items:center;">
+                        <div class="${skinPreviewClass}" style="width:50px;height:50px;display:flex;justify-content:center;align-items:center;margin-right:15px;border-radius:8px;background:rgba(0,0,0,0.3);"><svg class="bolt-svg" style="width:30px;height:30px" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div>
+                        <span class="name-txt">${s.name}</span>
+                    </div>
+                    ${btn}
+                </div>`;
+            });
+            checkFreeChest(); // Render sonrası ilk kontrolü yap
         }
 
-        // Utils & Settings
+        // Utils & Settings (Aynı kaldı)
         function checkAchievements(){let n=false;BADGES_DB.forEach(b=>{if(!game.badges.includes(b.id)&&b.req(game)){game.badges.push(b.id);showNotify("ROZET: "+b.name,"var(--gold)");playSfx('drop');n=true;}});if(n)renderBadges();}
         function renderBadges(){const l=document.getElementById('badgeList');l.innerHTML="";BADGES_DB.forEach(b=>{l.innerHTML+=`<div class="badge ${game.badges.includes(b.id)?'unlocked':''}"><i class="fa-solid ${b.icon}"></i><div style="font-size:10px;">${b.name}</div></div>`;});}
+        
         function openDaily(){document.getElementById('dailyModal').style.display='flex';const g=document.getElementById('dailyGrid');g.innerHTML="";const t=Math.floor(Date.now()/86400000),l=Math.floor(game.daily.last/86400000);if(t-l>1)game.daily.streak=0;for(let i=0;i<7;i++){let st="";if(i<game.daily.streak)st="claimed";if(i===game.daily.streak)st="active";let r=DAILY_REWARDS[i];if(r==='CYBER_KEY')r='<i class="fa-solid fa-key" style="color:var(--blue)"></i>';else r=format(r);g.innerHTML+=`<div class="daily-day ${st}"><span class="day-num">Gün ${i+1}</span><div style="margin-top:10px;font-weight:bold;">${r}</div></div>`;}const b=document.getElementById('dailyClaimBtn');if(t>l){b.disabled=false;b.innerText="ÖDÜLÜ AL";b.style.background="var(--gold)";}else{b.disabled=true;b.innerText="YARIN GEL";b.style.background="#333";}}
-        function claimDaily(){game.daily.last=Date.now();const r=DAILY_REWARDS[game.daily.streak];if(r==='CYBER_KEY'){game.keys.cyber++;showNotify("SİBER ANAHTAR!","var(--blue)");}else{game.volt+=r;showNotify(`+${format(r)} VOLT`,"var(--gold)");}game.daily.streak=(game.daily.streak+1)%7;playSfx('drop');openDaily();updateUI();}
+        
+        // DAILY CLAIM GÜNCELLENDİ (Yeni Ses)
+        function claimDaily(){game.daily.last=Date.now();const r=DAILY_REWARDS[game.daily.streak];if(r==='CYBER_KEY'){game.keys.cyber++;showNotify("SİBER ANAHTAR!","var(--blue)");}else{game.volt+=r;showNotify(`+${format(r)} VOLT`,"var(--gold)");}game.daily.streak=(game.daily.streak+1)%7;playSfx('daily_claim');openDaily();updateUI();}
+        
         function toggleSettings(){const m=document.getElementById('settingsModal');m.style.display=m.style.display==='flex'?'none':'flex';document.getElementById('nameInput').value=game.name;if(game.avatar)document.getElementById('previewAvatar').style.backgroundImage=`url(${game.avatar})`;}
         function handleFile(i){if(i.files&&i.files[0]){const r=new FileReader();r.onload=(e)=>{game.tempImg=e.target.result;document.getElementById('previewAvatar').style.backgroundImage=`url(${e.target.result})`;};r.readAsDataURL(i.files[0]);}}
         function saveProfile(){game.name=document.getElementById('nameInput').value||"Oyuncu";if(game.tempImg){game.avatar=game.tempImg;game.tempImg=null;}game.settings.sound=document.getElementById('chkSound').checked;game.settings.haptic=document.getElementById('chkHaptic').checked;toggleSettings();updateUI();}
 
-        function updateUI(){document.getElementById('mainScore').innerText=format(Math.floor(game.volt));document.getElementById('vDisp').innerText=format(Math.floor(game.volt));document.getElementById('eDisp').innerText=game.electrium.toFixed(4);document.getElementById('eRate').innerText=game.e_rate.toFixed(4);document.getElementById('kTotal').innerText=game.keys.std+game.keys.cyber+game.keys.plasma;document.getElementById('k1').innerText=game.keys.std;document.getElementById('k2').innerText=game.keys.cyber;document.getElementById('k3').innerText=game.keys.plasma;if(game.avatar){const h=document.getElementById('headerAvatar');h.style.display='block';h.style.backgroundImage=`url(${game.avatar})`;}const m=1000+(game.level-1)*200;document.getElementById('lvlDisp').innerText=game.level;document.getElementById('energyTxt').innerText=`${Math.floor(game.energy)}/${m}`;document.getElementById('energyBar').style.width=((game.energy/m)*100)+'%';}
-        function showNotify(t,c){const n=document.getElementById('drop-notification');n.innerText=t;n.style.color=c;n.style.borderColor=c;n.style.textShadow=`0 0 10px ${c}`;n.classList.remove('show');void n.offsetWidth;n.classList.add('show');}
+        // YENİ FONKSİYON: OYUNU PAYLAŞ
+        function shareGame() {
+            const shareText = "Electrium'da benimle güçlen! Sen de tıkla ve Electrium kazan!";
+            const shareUrl = "https://t.me/share/url?url=" + encodeURIComponent(window.location.href) + "&text=" + encodeURIComponent(shareText);
+            
+            if (tg.shareUrl) {
+                tg.shareUrl(shareUrl);
+            } else {
+                window.open(shareUrl, '_blank');
+            }
+        }
+
+        function updateUI(){
+            document.getElementById('mainScore').innerText=format(Math.floor(game.volt));document.getElementById('vDisp').innerText=format(Math.floor(game.volt));
+            document.getElementById('eDisp').innerText=game.electrium.toFixed(4);document.getElementById('eRate').innerText=game.e_rate.toFixed(4);
+            document.getElementById('kTotal').innerText=game.keys.std+game.keys.cyber+game.keys.plasma;document.getElementById('k1').innerText=game.keys.std;document.getElementById('k2').innerText=game.keys.cyber;document.getElementById('k3').innerText=game.keys.plasma;
+            
+            // CÜZDAN GÜNCELLEMESİ
+            document.getElementById('walletElectriumDisp').innerText = game.electrium.toFixed(4) + ' E';
+
+            if(game.avatar){const h=document.getElementById('headerAvatar');h.style.display='block';h.style.backgroundImage=`url(${game.avatar})`;}
+            const m=1000+(game.level-1)*200;document.getElementById('lvlDisp').innerText=game.level;document.getElementById('energyTxt').innerText=`${Math.floor(game.energy)}/${m}`;document.getElementById('energyBar').style.width=((game.energy/m)*100)+'%';
+        }
+        
+        // UYARI GÖSTERİM FONKSİYONU GÜNCELLENDİ (Neon Efekt)
+        function showNotify(t,c){
+            const n=document.getElementById('drop-notification');
+            n.innerText=t;
+            n.style.color=c;
+            n.style.borderColor=c;
+            // Neon Efekt Uygulaması (Glow)
+            n.style.textShadow=`0 0 5px ${c}`; 
+            
+            n.classList.remove('show');
+            void n.offsetWidth;
+            n.classList.add('show');
+        }
+
         function animateKey(x,y,c){const e=document.createElement('i');e.className='fa-solid fa-key flying-key';e.style.left=x+'px';e.style.top=y+'px';e.style.color=c;document.body.appendChild(e);setTimeout(()=>e.remove(),1000);}
         function createFloat(x,y,t){const e=document.createElement('div');e.className='float-txt';e.innerText=t;e.style.left=x+'px';e.style.top=y+'px';e.style.color='white';document.body.appendChild(e);setTimeout(()=>e.remove(),800);}
         function nav(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));event.currentTarget.classList.add('active');}
         function format(n){if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'k';return Math.floor(n);}
     </script>
 </body>
-
 </html>
