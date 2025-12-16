@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARC v22 AKILLI RAF</title>
+    <title>ARC v23 KULLANICI TAKİBİ</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -47,11 +47,11 @@
         }
         @keyframes scanLine { 0% { top: 20%; opacity: 0; } 50% { opacity: 1; } 100% { top: 80%; opacity: 0; } }
 
-        /* KART TASARIMLARI (YENİ GÖRSEL İYİLEŞTİRME) */
+        /* KART TASARIMLARI */
         .stat-card {
             background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid #334155; border-radius: 16px; padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Hafif gölge */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
         }
         
         .stock-card {
@@ -93,18 +93,49 @@
         #zoom-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: #334155; border-radius: 2px; }
         #zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 3px solid #fff; }
         #zoom-slider::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 3px solid #fff; }
+
+        /* GİRİŞ EKRANI */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 1000;
+            background: linear-gradient(to bottom right, #0b0f19, #1e293b);
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 40px; transition: opacity 0.5s;
+        }
+        #login-screen.hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="flex flex-col h-full overflow-hidden">
+    
+    <div id="login-screen">
+        <div class="mb-10 text-center">
+             <div class="w-16 h-16 rounded-2xl bg-blue-500 mx-auto mb-3 flex items-center justify-center shadow-xl shadow-blue-500/20">
+                <i class="fas fa-user-lock text-white text-2xl"></i>
+            </div>
+            <h2 class="font-extrabold text-3xl text-white mb-1">Operatör Girişi</h2>
+            <p class="text-slate-400 text-sm">Devam etmek için ID giriniz.</p>
+        </div>
+        
+        <input type="text" id="operator-id-input" placeholder="Örn: OP-01" maxlength="10"
+            class="w-full max-w-sm bg-slate-800 border border-slate-700 rounded-xl p-4 text-center text-xl font-bold text-white uppercase outline-none focus:border-blue-500 transition mb-6"
+            value="OP-01" onkeyup="checkEnter(event)">
+            
+        <button id="login-button" onclick="loginOperator()"
+            class="w-full max-w-sm py-4 bg-blue-600 rounded-xl font-bold text-white shadow-lg shadow-blue-900/40 active:scale-95 transition">
+            UYGULAMAYI BAŞLAT
+        </button>
+    </div>
 
     <header class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-[#0b0f19] z-20">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                 <i class="fas fa-warehouse text-white text-sm"></i>
             </div>
-            <h1 class="font-extrabold text-xl tracking-tight">DEPOCU <span class="text-blue-500 font-light">v22</span></h1>
+            <h1 class="font-extrabold text-xl tracking-tight">DEPOCU <span class="text-blue-500 font-light">v23</span></h1>
         </div>
-        <button onclick="toggleSettings()" class="w-10 h-10 bg-slate-800 rounded-full text-slate-400 hover:text-white transition"><i class="fas fa-cog"></i></button>
+        <div class="flex items-center gap-3">
+             <span id="current-operator" class="text-xs font-bold text-blue-400 bg-slate-800 px-3 py-1 rounded-full border border-blue-700/50"></span>
+             <button onclick="toggleSettings()" class="w-10 h-10 bg-slate-800 rounded-full text-slate-400 hover:text-white transition"><i class="fas fa-cog"></i></button>
+        </div>
     </header>
 
     <main class="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
@@ -341,28 +372,72 @@
                 </button>
             </div>
             <button onclick="toggleSettings()" class="w-full py-4 mt-6 bg-slate-800 rounded-xl font-bold text-white">Kapat</button>
+            
+            <button onclick="logoutOperator()" class="w-full py-2 mt-4 bg-slate-800 rounded-xl font-bold text-red-400 border border-red-900/50 text-sm">
+                <i class="fas fa-sign-out-alt mr-2"></i> Operatör Değiştir
+            </button>
         </div>
     </div>
 
     <script>
         // --- CORE LOGIC ---
-        const DB_KEY = 'arc_v22_db';
+        const DB_KEY = 'arc_v23_db';
         let db = { products: {} };
         let html5QrCode;
         let scanMode = 'IN'; // IN, OUT, TRANSFER, COUNT
         let parsedData = null;
         let activeFilter = 'all';
-        let transferStep = 0; // 0: Hazır, 1: Ürün Taranıyor (Eski kaynak raf otomatik kabul edilecek), 2: Hedef Raf Taranıyor
+        let transferStep = 0; 
         let transferSourceProd = null;
-        let transferSourceShelf = null; // Ürünün kayıtlı rafı
-        let scannedShelf = null; // En son taranan raf (hata kontrolü için)
+        let transferSourceShelf = null; 
+        let scannedShelf = null; 
         
+        // ARC v23 YENİLİĞİ: Operatör Takibi
+        let operatorId = localStorage.getItem('arc_operator_id') || null;
+
         // Zoom Kontrol Değişkenleri
         let currentTrack = null;
         let zoomCapabilities = null;
         const DEFAULT_ZOOM = 1;
 
+        // --- ARC v23 GİRİŞ KONTROLÜ ---
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                loginOperator();
+            }
+        }
+        
+        function loginOperator() {
+            const input = document.getElementById('operator-id-input').value.toUpperCase().trim();
+            if (input.length < 3) {
+                alert("Lütfen geçerli bir Operatör ID (en az 3 karakter) giriniz.");
+                return;
+            }
+            operatorId = input;
+            localStorage.setItem('arc_operator_id', operatorId);
+            document.getElementById('current-operator').innerText = operatorId;
+            document.getElementById('login-screen').classList.add('hidden');
+            init(); // Veritabanı yüklemesini başlat
+        }
+        
+        function logoutOperator() {
+            operatorId = null;
+            localStorage.removeItem('arc_operator_id');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('operator-id-input').value = ""; // Inputu temizle
+            toggleSettings();
+        }
+
+        // --- BAŞLANGIÇ VE KAYIT ---
+
         function init() {
+            // Eğer operatör ID yoksa, giriş ekranı zaten görünüyor olmalı.
+            if (!operatorId) {
+                 document.getElementById('login-screen').classList.remove('hidden');
+                 return;
+            }
+            document.getElementById('current-operator').innerText = operatorId;
             try {
                 const d = localStorage.getItem(DB_KEY);
                 if(d) db = JSON.parse(d);
@@ -398,30 +473,49 @@
                 statusDiv.classList.add('hidden');
             }, 3000);
         }
-
+        
+        // DÜZELTİLMİŞ parseBarcode Fonksiyonu (GS1 uyumlu)
         function parseBarcode(text) {
-            let res = { raw: text, gtin: "", lot: "NO-LOT", ref: "", sn: "", uniqueId: "" };
-            text = text.replace(/\s+/g, ' ').trim();
+            let res = { raw: text, gtin: "", lot: "NO-LOT", ref: "", sn: text, uniqueId: "" };
+            text = text.trim();
             
-            // Raf/Lokasyon barkodlarını basitçe ayırma
-            if(text.length < 15 && !text.includes(' ') && text.match(/[A-Z]{1,3}-\d+/i)) {
-                return { isShelf: true, shelf: text.toUpperCase() };
+            // Raf/Lokasyon barkodlarını basitçe ayırma (Örn: A-10, LOC-001)
+            if(text.length < 15 && !text.includes('(') && text.match(/^[A-Z0-9-]{2,12}$/i)) {
+                 if (text.match(/[A-Z]{1,3}-\d+/i)) { // Özellikle depo raf formatı
+                    return { isShelf: true, shelf: text.toUpperCase() };
+                 }
             }
             
-            if(text.includes(' ')) { 
-                const parts = text.split(' ');
-                for(let i=0; i<parts.length; i++) {
-                    let k = parts[i], v = parts[i+1];
-                    if(!v) continue;
-                    if(k=='01') res.gtin=v; if(k=='10') res.lot=v; 
-                    if(k=='21') res.sn=v; if(k=='240') res.ref=v;
+            // GS1/AI formatı kontrolü (Örn: (01)1234567890123(10)LOT123(21)SN456)
+            if(text.includes('(') && text.includes(')')) { 
+                const regex = /\((\d{2,4})\)(.*?)(?=\(|\s|$)/g;
+                let match;
+                
+                while ((match = regex.exec(text)) !== null) {
+                    const ai = match[1];
+                    const value = match[2];
+                    
+                    if (ai === '01') res.gtin = value;        // GTIN (AI 01)
+                    if (ai === '10') res.lot = value;         // LOT (AI 10)
+                    if (ai === '21') res.sn = value;          // Seri No (AI 21)
+                    if (ai === '240') res.ref = value;        // Ek Referans No (AI 240)
                 }
-            } else { res.sn = text; } 
+                
+                if (res.gtin || res.lot) res.sn = res.sn || res.gtin || res.lot; 
+                
+            } else { 
+                 res.sn = text;
+                 if (text.length >= 12 && text.length <= 14 && /^\d+$/.test(text)) {
+                    res.gtin = text;
+                 }
+            } 
             
-            res.uniqueId = (res.ref || res.gtin || "GENERIC") + "_" + res.lot;
+            res.uniqueId = (res.gtin || res.ref || "GENERIC_" + res.sn) + "_" + res.lot;
             res.isShelf = false;
             return res;
         }
+
+        // --- TARAMA VE MOD KONTROLÜ ---
         
         function setupZoomControls(track) {
             currentTrack = track;
@@ -452,6 +546,8 @@
         }
 
         function startScanner(mode) {
+             if (!operatorId) { alert("Lütfen önce Operatör ID girişi yapınız."); return; }
+             
             scanMode = mode;
             document.getElementById('scanner-container').style.display = 'block';
             document.getElementById('rapid-mode').checked = false; 
@@ -510,7 +606,7 @@
 
                 if (scanMode === 'TRANSFER' && transferStep === 1) {
                     scanDisplay.innerText = `TAŞIMA MODU (2. Adım: ÜRÜN TARA. Hedef: ${scannedShelf})`;
-                    transferStep = 2; // Hedef rafı taranmış oldu
+                    transferStep = 2; 
                 } else if (scanMode === 'IN' || scanMode === 'OUT') {
                     scanDisplay.innerText = `${scanMode === 'IN' ? 'GİRİŞ' : 'ÇIKIŞ'} MODU (ÜRÜN TARA. Raf: ${scannedShelf})`;
                 }
@@ -528,11 +624,9 @@
                     return;
                 }
                 
-                // Eğer ürün sistemde kayıtlıysa ve kayıtlı rafı taranan rafla eşleşmiyorsa HATA ver
                 if (prod && prod.shelf && prod.shelf !== scannedShelf) {
                     playFeedback('error');
                     showScanStatus(`HATA: Bu ürün ${scannedShelf} değil, KAYITLI RAF: ${prod.shelf}`, 'error');
-                    // Yanlış raftan alım veya taşıma girişimi engellendi.
                     return;
                 }
             }
@@ -542,36 +636,34 @@
                 if (!prod || prod.totalQty === 0) {
                     playFeedback('error');
                     showScanStatus("HATA: Taşınacak Ürün Stokta Bulunamadı!", 'error');
-                    transferStep = 1; scannedShelf = null; // Başa dön
+                    transferStep = 1; scannedShelf = null; 
                     scanDisplay.innerText = 'TAŞIMA MODU (HEDEF RAF TARA)';
                     return;
                 }
                 
-                // Kaynak raf artık ürünün kayıtlı rafı (Akıllı Doğrulama sayesinde doğru rafta olduğundan emin olduk)
                 transferSourceProd = prod;
                 transferSourceShelf = prod.shelf; 
-                const targetShelf = scannedShelf; // 1. adımda taranan hedef raf
+                const targetShelf = scannedShelf; 
                 
-                // Transferi Gerçekleştir ve Logla
                 prod.shelf = targetShelf;
                 prod.lastAction = Date.now();
                 
-                const entry = { date: new Date().toISOString(), type: 'TRANSFER', sourceShelf: transferSourceShelf, targetShelf: targetShelf };
+                // ARC v23: Operatör Kaydı Eklendi
+                const entry = { date: new Date().toISOString(), type: 'TRANSFER', operatorId: operatorId, sourceShelf: transferSourceShelf, targetShelf: targetShelf };
                 prod.logs.push(entry);
                 
                 saveDB();
                 playFeedback('success');
                 showScanStatus(`TAŞIMA BAŞARILI: ${transferSourceShelf} -> ${targetShelf}`, 'success');
                 
-                // İşlem bitti, modu sıfırla
                 transferStep = 1; 
                 transferSourceProd = null;
-                scannedShelf = targetShelf; // Yeni rafı, bir sonraki işleme baz olabilir
+                scannedShelf = targetShelf; 
                 scanDisplay.innerText = 'TAŞIMA MODU (HEDEF RAF TARA)';
                 return;
             }
 
-            // Normal IN/OUT / COUNT Modu
+            // Hızlı Mod (Sayı artırma/azaltma)
             const isRapid = document.getElementById('rapid-mode').checked;
             
             if (scanMode === 'COUNT') {
@@ -581,20 +673,19 @@
                  return;
             }
 
-            // Hızlı Mod (Sayı artırma/azaltma)
             if(isRapid && prod) {
-                // Hızlı modda da raf taranmış olmalı.
                 if(!scannedShelf && prod.totalQty > 0) { 
                     playFeedback('error'); 
                     showScanStatus("HATA: Hızlı işlem için RAF TARA!", 'error');
                     return; 
                 } 
                 
+                // ARC v23: Operatör Kaydı Eklendi
+                const rapidEntry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, operatorId: operatorId, shelf: scannedShelf };
+
                 if (scanMode === 'IN') { 
-                    // IN modunda ürünün rafını otomatik güncelle (Akıllı Güncelleme)
                     if(prod.shelf !== scannedShelf) prod.shelf = scannedShelf;
-                    
-                    prod.logs.push({ sn: parsedData.sn, date: new Date().toISOString(), type: 'IN', shelf: scannedShelf });
+                    prod.logs.push(rapidEntry);
                     prod.totalQty++;
                     prod.lastAction = new Date().getTime();
                     saveDB();
@@ -602,7 +693,7 @@
                     playFeedback('success');
                     return;
                 } else if (scanMode === 'OUT' && prod.totalQty > 0) { 
-                    prod.logs.push({ sn: parsedData.sn, date: new Date().toISOString(), type: 'OUT', shelf: scannedShelf });
+                    prod.logs.push(rapidEntry);
                     prod.totalQty = Math.max(0, prod.totalQty - 1);
                     prod.lastAction = new Date().getTime();
                     saveDB();
@@ -642,7 +733,6 @@
             
             let currentShelf = (prod ? prod.shelf : "") || "";
 
-            // Eğer raf taraması yapıldıysa, raf inputunu bu değerle önceden doldur.
             if (scannedShelf) {
                 currentShelf = scannedShelf;
             }
@@ -701,11 +791,10 @@
             // GİRİŞ İŞLEMİNDE RAF GÜNCELLEMESİ
             if (scanMode === 'IN' && prod.shelf !== newShelf) {
                 if (prod.totalQty === 0 || !prod.shelf) {
-                     prod.shelf = newShelf; // İlk giriş veya stok 0 iken yeni rafa kayıt
+                     prod.shelf = newShelf; 
                 } else if (prod.shelf && confirm(`Bu ürün kayıtlı rafı ${prod.shelf}. Yeni raf ${newShelf} olarak güncellensin mi?`)) {
                     prod.shelf = newShelf;
                 } else if (prod.shelf !== newShelf) {
-                     // Kullanıcı onay vermediyse işlemi durdur
                      return;
                 }
             }
@@ -715,7 +804,8 @@
             const imgEl = document.getElementById('m-img');
             if(!imgEl.classList.contains('hidden')) prod.image = imgEl.src;
 
-            const entry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, shelf: newShelf };
+            // ARC v23: Operatör Kaydı Eklendi
+            const entry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, operatorId: operatorId, shelf: newShelf };
             
             if (scanMode === 'IN') {
                  prod.logs.push(entry);
@@ -732,7 +822,7 @@
             stopScanner();
         }
         
-        // --- Diğer Fonksiyonlar (V21'den Devralındı) ---
+        // --- SAYIM VE GEÇMİŞ FONKSİYONLARI ---
         
         function updateCountComparison(systemQty) {
             const countInput = document.getElementById('count-input-qty');
@@ -767,9 +857,11 @@
             
             const prod = db.products[parsedData.uniqueId];
             
+            // ARC v23: Operatör Kaydı Eklendi
             const entry = { 
                 date: new Date().toISOString(), 
                 type: 'COUNT', 
+                operatorId: operatorId,
                 systemQty: systemQty,
                 countedQty: countedQty,
                 shelf: shelf
@@ -795,7 +887,7 @@
             const sortedLogs = [...prod.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
 
             sortedLogs.forEach(log => {
-                let typeClass, icon, description;
+                let typeClass, icon, description, operatorText = log.operatorId ? `<span class="text-blue-500 font-mono text-[9px] ml-1">(${log.operatorId})</span>` : '';
                 const date = new Date(log.date).toLocaleString('tr-TR');
 
                 if (log.type === 'IN') {
@@ -815,12 +907,12 @@
                     icon = '<i class="fas fa-list-ol text-blue-400"></i>';
                     const diff = log.countedQty - log.systemQty;
                     let diffText = diff === 0 ? 'Fark Yok' : (diff > 0 ? `+${diff}` : `${diff}`);
-                    description = `SAYIM (Raf: ${log.shelf}) - Sistem: ${log.systemQty}, Sayılan: ${log.countedQty} (${diffText})`;
+                    description = `SAYIM (Raf: ${log.shelf}) - Fark: ${diffText}`;
                 }
 
                 timeline.innerHTML += `
                     <div class="timeline-item ${typeClass}">
-                        <div class="text-[10px] text-slate-500 font-mono">${date}</div>
+                        <div class="text-[10px] text-slate-500 font-mono">${date}${operatorText}</div>
                         <div class="text-sm font-semibold text-white mt-0.5 flex items-center gap-2">${icon} ${description}</div>
                     </div>
                 `;
@@ -865,7 +957,6 @@
             document.getElementById('dash-critical').innerText = criticals;
             document.getElementById('dash-today').innerText = todayMoves + " Hareket";
 
-            // Hafıza kullanımı için placeholder değerleri
             document.getElementById('storage-kb').innerText = '12.5 KB';
             document.getElementById('storage-percentage').innerText = '0.2% Kullanıldı (Max 5MB)';
             document.getElementById('storage-bar').style.width = '0.2%';
@@ -921,6 +1012,8 @@
         }
 
         function switchPage(page) {
+             if (!operatorId) { alert("Lütfen önce Operatör ID girişi yapınız."); return; }
+             
             document.getElementById('page-home').classList.add('hidden');
             document.getElementById('page-stocks').classList.add('hidden');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active', 'text-blue-500'));
@@ -968,14 +1061,24 @@
         }
 
         function exportExcel() {
-            let csv = "\uFEFFGTIN;URUN ADI;REF;LOT;RAF;ADET;SON ISLEM\n";
+            let csv = "\uFEFFGTIN;URUN ADI;REF;LOT;RAF;ADET;SON ISLEM;ISLEM TIPI;OPERATOR ID\n";
             Object.values(db.products).forEach(p => {
-                csv += `${p.id};${p.name};${p.ref};${p.lot};${p.shelf};${p.totalQty};${new Date(p.lastAction).toLocaleString()}\n`;
+                p.logs.forEach(l => {
+                    const row = [
+                        p.id, p.name, p.ref, p.lot, 
+                        l.type === 'TRANSFER' ? `${l.sourceShelf}->${l.targetShelf}` : l.shelf, 
+                        p.totalQty, 
+                        new Date(l.date).toLocaleString(),
+                        l.type,
+                        l.operatorId || 'Bilinmiyor' // Operator ID ekleniyor
+                    ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(';');
+                    csv += row + "\n";
+                });
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "stok_raporu.csv";
+            link.download = "stok_raporu_" + new Date().toISOString().slice(0, 10) + ".csv";
             link.click();
         }
         
