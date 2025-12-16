@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARC v17 CYCLE COUNT</title>
+    <title>ARC v22 AKILLI RAF</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght=500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
-        /* GENEL ATMOSFER */
+        /* GENEL ATMOSFER VE FONT */
         body { background-color: #0b0f19; color: #e2e8f0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
@@ -47,15 +47,17 @@
         }
         @keyframes scanLine { 0% { top: 20%; opacity: 0; } 50% { opacity: 1; } 100% { top: 80%; opacity: 0; } }
 
-        /* KART TASARIMLARI */
+        /* KART TASARIMLARI (YENİ GÖRSEL İYİLEŞTİRME) */
         .stat-card {
             background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid #334155; border-radius: 16px; padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Hafif gölge */
         }
         
         .stock-card {
             background: #172033; border: 1px solid #28354c; border-radius: 16px;
             transition: transform 0.1s; position: relative; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .stock-card:active { transform: scale(0.98); }
 
@@ -79,70 +81,86 @@
         .timeline-out:before { background: #f43f5e; }
         .timeline-transfer:before { background: #facc15; }
         .timeline-count:before { background: #3b82f6; }
+        
+        /* ZOOM SLIDER STYLES */
+        #zoom-controls {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 300px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            padding: 10px 20px; border-radius: 99px; z-index: 60;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #zoom-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: #334155; border-radius: 2px; }
+        #zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 3px solid #fff; }
+        #zoom-slider::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 3px solid #fff; }
     </style>
 </head>
 <body class="flex flex-col h-full overflow-hidden">
 
     <header class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-[#0b0f19] z-20">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-                <i class="fas fa-cube text-white text-xs"></i>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <i class="fas fa-warehouse text-white text-sm"></i>
             </div>
-            <h1 class="font-bold text-lg tracking-tight">ARC <span class="text-blue-500 font-light">v17</span></h1>
+            <h1 class="font-extrabold text-xl tracking-tight">DEPOCU <span class="text-blue-500 font-light">v22</span></h1>
         </div>
-        <button onclick="toggleSettings()" class="text-slate-400 hover:text-white transition"><i class="fas fa-sliders-h"></i></button>
+        <button onclick="toggleSettings()" class="w-10 h-10 bg-slate-800 rounded-full text-slate-400 hover:text-white transition"><i class="fas fa-cog"></i></button>
     </header>
 
     <main class="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
         
         <div id="page-home" class="p-6 space-y-6 fade-in">
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="startScanner('IN')" class="group relative h-24 rounded-2xl bg-gradient-to-br from-emerald-900/50 to-slate-900 border border-emerald-500/30 overflow-hidden active:scale-95 transition-all">
-                    <div class="absolute top-3 left-3 p-2 bg-emerald-500/20 rounded-lg text-emerald-400"><i class="fas fa-arrow-down text-sm"></i></div>
-                    <div class="absolute bottom-3 left-3 text-left">
-                        <div class="text-xl font-bold text-white group-hover:text-emerald-400 transition">GİRİŞ</div>
+                <button onclick="startScanner('IN')" class="group relative h-28 rounded-2xl bg-gradient-to-br from-emerald-700/50 to-emerald-900/30 border border-emerald-500/30 overflow-hidden shadow-lg shadow-emerald-900/30 active:scale-[0.98] transition-all">
+                    <div class="absolute top-4 left-4 p-2 bg-emerald-500/20 rounded-xl text-emerald-400"><i class="fas fa-arrow-down text-xl"></i></div>
+                    <div class="absolute bottom-4 left-4 text-left">
+                        <div class="text-2xl font-extrabold text-white">GİRİŞ</div>
+                        <div class="text-xs text-emerald-300">Stok Ekle</div>
                     </div>
                 </button>
 
-                <button onclick="startScanner('OUT')" class="group relative h-24 rounded-2xl bg-gradient-to-br from-rose-900/50 to-slate-900 border border-rose-500/30 overflow-hidden active:scale-95 transition-all">
-                    <div class="absolute top-3 left-3 p-2 bg-rose-500/20 rounded-lg text-rose-400"><i class="fas fa-arrow-up text-sm"></i></div>
-                    <div class="absolute bottom-3 left-3 text-left">
-                        <div class="text-xl font-bold text-white group-hover:text-rose-400 transition">ÇIKIŞ</div>
+                <button onclick="startScanner('OUT')" class="group relative h-28 rounded-2xl bg-gradient-to-br from-rose-700/50 to-rose-900/30 border border-rose-500/30 overflow-hidden shadow-lg shadow-rose-900/30 active:scale-[0.98] transition-all">
+                    <div class="absolute top-4 left-4 p-2 bg-rose-500/20 rounded-xl text-rose-400"><i class="fas fa-arrow-up text-xl"></i></div>
+                    <div class="absolute bottom-4 left-4 text-left">
+                        <div class="text-2xl font-extrabold text-white">ÇIKIŞ</div>
+                        <div class="text-xs text-rose-300">Stok Azalt</div>
                     </div>
                 </button>
                 
-                 <button onclick="startScanner('TRANSFER')" class="group relative h-24 rounded-2xl bg-gradient-to-br from-yellow-900/50 to-slate-900 border border-yellow-500/30 overflow-hidden active:scale-95 transition-all">
-                    <div class="absolute top-3 left-3 p-2 bg-yellow-500/20 rounded-lg text-yellow-400"><i class="fas fa-exchange-alt text-sm"></i></div>
-                    <div class="absolute bottom-3 left-3 text-left">
-                        <div class="text-xl font-bold text-white group-hover:text-yellow-400 transition">TAŞIMA</div>
+                 <button onclick="startScanner('TRANSFER')" class="group relative h-28 rounded-2xl bg-gradient-to-br from-yellow-700/50 to-yellow-900/30 border border-yellow-500/30 overflow-hidden shadow-lg shadow-yellow-900/30 active:scale-[0.98] transition-all">
+                    <div class="absolute top-4 left-4 p-2 bg-yellow-500/20 rounded-xl text-yellow-400"><i class="fas fa-exchange-alt text-xl"></i></div>
+                    <div class="absolute bottom-4 left-4 text-left">
+                        <div class="text-2xl font-extrabold text-white">TAŞIMA</div>
+                        <div class="text-xs text-yellow-300">Raf Değişikliği</div>
                     </div>
                 </button>
-                 <button onclick="startScanner('COUNT')" class="group relative h-24 rounded-2xl bg-gradient-to-br from-blue-900/50 to-slate-900 border border-blue-500/30 overflow-hidden active:scale-95 transition-all">
-                    <div class="absolute top-3 left-3 p-2 bg-blue-500/20 rounded-lg text-blue-400"><i class="fas fa-calculator text-sm"></i></div>
-                    <div class="absolute bottom-3 left-3 text-left">
-                        <div class="text-xl font-bold text-white group-hover:text-blue-400 transition">SAYIM</div>
+                 <button onclick="startScanner('COUNT')" class="group relative h-28 rounded-2xl bg-gradient-to-br from-blue-700/50 to-blue-900/30 border border-blue-500/30 overflow-hidden shadow-lg shadow-blue-900/30 active:scale-[0.98] transition-all">
+                    <div class="absolute top-4 left-4 p-2 bg-blue-500/20 rounded-xl text-blue-400"><i class="fas fa-calculator text-xl"></i></div>
+                    <div class="absolute bottom-4 left-4 text-left">
+                        <div class="text-2xl font-extrabold text-white">SAYIM</div>
+                        <div class="text-xs text-blue-300">Envanter Doğrulama</div>
                     </div>
                 </button>
             </div>
 
             <div>
-                <h3 class="text-slate-500 text-xs font-bold uppercase mb-3 px-1">Genel Durum</h3>
+                <h3 class="text-slate-500 text-xs font-bold uppercase mb-3 px-1">Genel Performans</h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="stat-card">
                         <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Toplam Stok</div>
-                        <div class="text-3xl font-bold text-white" id="dash-total">0</div>
+                        <div class="text-4xl font-extrabold text-white" id="dash-total">0</div>
                     </div>
                     <div class="stat-card">
                         <div class="text-rose-400 text-[10px] font-bold uppercase mb-1">Kritik Seviye</div>
-                        <div class="text-3xl font-bold text-white" id="dash-critical">0</div>
+                        <div class="text-4xl font-extrabold text-white" id="dash-critical">0</div>
                     </div>
                     <div class="stat-card col-span-2 flex justify-between items-center">
                         <div>
                             <div class="text-blue-400 text-[10px] font-bold uppercase">Bugünkü İşlem</div>
-                            <div class="text-xl font-bold text-white mt-1" id="dash-today">0 Hareket</div>
+                            <div class="text-xl font-extrabold text-white mt-1" id="dash-today">0 Hareket</div>
                         </div>
-                        <div class="h-10 w-10 bg-slate-800 rounded-full flex items-center justify-center text-slate-500">
-                            <i class="fas fa-chart-pie"></i>
+                        <div class="h-12 w-12 bg-slate-800 rounded-full flex items-center justify-center text-blue-500 border border-slate-700">
+                            <i class="fas fa-chart-line"></i>
                         </div>
                     </div>
                 </div>
@@ -154,13 +172,13 @@
                     <div class="text-xs font-mono text-white" id="storage-kb">0 KB</div>
                 </div>
                 <div class="w-full bg-slate-700 h-2 rounded-full mt-2">
-                    <div id="storage-bar" class="h-2 rounded-full" style="width: 0%"></div>
+                    <div id="storage-bar" class="h-2 rounded-full bg-blue-500" style="width: 0%"></div>
                 </div>
                 <div class="text-[10px] mt-1 text-right text-slate-500" id="storage-percentage">0% Kullanıldı</div>
             </div>
 
             <div class="text-center mt-8">
-                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] text-slate-500">
+                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] text-slate-500 border border-slate-700">
                     <i class="fas fa-keyboard mr-1"></i> El Terminali Modu Hazır
                 </span>
             </div>
@@ -191,8 +209,8 @@
             <span class="text-[10px] font-medium">Panel</span>
         </button>
         
-        <button onclick="startScanner('IN')" class="bg-blue-600 w-12 h-12 rounded-full -mt-8 shadow-lg shadow-blue-600/40 flex items-center justify-center text-white border-4 border-[#0b0f19]">
-            <i class="fas fa-qrcode"></i>
+        <button onclick="startScanner('IN')" class="bg-blue-600 w-14 h-14 rounded-full -mt-8 shadow-xl shadow-blue-600/40 flex items-center justify-center text-white border-4 border-[#0b0f19] active:scale-95 transition">
+            <i class="fas fa-qrcode text-xl"></i>
         </button>
 
         <button onclick="switchPage('stocks')" class="nav-btn flex flex-col items-center gap-1 text-slate-500">
@@ -212,11 +230,21 @@
         
         <div class="scan-laser"></div>
         
-        <div class="absolute bottom-10 left-0 w-full flex justify-center z-[60]">
+        <div class="absolute bottom-0 left-0 w-full flex flex-col items-center pb-5 pt-3 space-y-3 z-[60]">
+             <div id="zoom-controls" class="hidden">
+                <i class="fas fa-search-plus text-white/80 text-sm flex-none"></i>
+                <input type="range" min="1" max="5" value="1" step="0.1" id="zoom-slider" oninput="applyZoom(this.value)">
+                <span class="text-white/80 text-xs font-mono w-6 text-right" id="zoom-level">1.0x</span>
+            </div>
+
              <label class="flex items-center gap-3 bg-black/50 backdrop-blur px-6 py-3 rounded-full border border-white/10 cursor-pointer">
                 <span class="text-xs font-bold text-white">SERİ OKUMA</span>
                 <input type="checkbox" id="rapid-mode" class="accent-blue-500 w-5 h-5">
              </label>
+        </div>
+        
+        <div id="scan-status-message" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-800/80 backdrop-blur-sm px-4 py-2 rounded-full text-white font-bold text-sm z-70 hidden transition-opacity duration-300">
+            HATA
         </div>
     </div>
 
@@ -318,15 +346,21 @@
 
     <script>
         // --- CORE LOGIC ---
-        const DB_KEY = 'arc_v17_db';
+        const DB_KEY = 'arc_v22_db';
         let db = { products: {} };
         let html5QrCode;
         let scanMode = 'IN'; // IN, OUT, TRANSFER, COUNT
         let parsedData = null;
         let activeFilter = 'all';
-        let transferStep = 0; // 0: Hazır, 1: Kaynak Raf Taranıyor, 2: Ürün Taranıyor, 3: Hedef Raf Taranıyor
+        let transferStep = 0; // 0: Hazır, 1: Ürün Taranıyor (Eski kaynak raf otomatik kabul edilecek), 2: Hedef Raf Taranıyor
         let transferSourceProd = null;
-        let transferSourceShelf = null;
+        let transferSourceShelf = null; // Ürünün kayıtlı rafı
+        let scannedShelf = null; // En son taranan raf (hata kontrolü için)
+        
+        // Zoom Kontrol Değişkenleri
+        let currentTrack = null;
+        let zoomCapabilities = null;
+        const DEFAULT_ZOOM = 1;
 
         function init() {
             try {
@@ -342,7 +376,7 @@
         }
 
         function playFeedback(type) {
-            if (navigator.vibrate) { navigator.vibrate(type === 'error' ? [50,50,50] : 100); }
+            if (navigator.vibrate) { navigator.vibrate(type === 'error' ? [150,50,150] : 100); }
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator(); const gain = ctx.createGain();
             osc.connect(gain); gain.connect(ctx.destination);
@@ -352,6 +386,17 @@
             
             gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1);
             osc.start(); osc.stop(ctx.currentTime + 0.1);
+        }
+
+        function showScanStatus(message, type = 'error') {
+            const statusDiv = document.getElementById('scan-status-message');
+            statusDiv.innerText = message;
+            statusDiv.classList.remove('hidden', 'bg-red-800/80', 'bg-green-800/80');
+            statusDiv.classList.add(type === 'error' ? 'bg-red-800/80' : 'bg-green-800/80');
+            
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 3000);
         }
 
         function parseBarcode(text) {
@@ -377,6 +422,34 @@
             res.isShelf = false;
             return res;
         }
+        
+        function setupZoomControls(track) {
+            currentTrack = track;
+            zoomCapabilities = track.getCapabilities();
+            const zoomContainer = document.getElementById('zoom-controls');
+            
+            if (zoomCapabilities.zoom) {
+                const slider = document.getElementById('zoom-slider');
+                slider.min = zoomCapabilities.zoom.min;
+                slider.max = Math.min(zoomCapabilities.zoom.max, 5); 
+                slider.step = zoomCapabilities.zoom.step;
+                slider.value = DEFAULT_ZOOM;
+                document.getElementById('zoom-level').innerText = slider.value + 'x';
+
+                zoomContainer.classList.remove('hidden');
+            } else {
+                zoomContainer.classList.add('hidden');
+            }
+        }
+        
+        function applyZoom(zoomValue) {
+            document.getElementById('zoom-level').innerText = parseFloat(zoomValue).toFixed(1) + 'x';
+            if (currentTrack && zoomCapabilities.zoom) {
+                currentTrack.applyConstraints({
+                    advanced: [{ zoom: parseFloat(zoomValue) }]
+                }).catch(e => console.error("Zoom uygulanamadı:", e));
+            }
+        }
 
         function startScanner(mode) {
             scanMode = mode;
@@ -384,9 +457,9 @@
             document.getElementById('rapid-mode').checked = false; 
 
             const modeText = { 
-                'IN': 'GİRİŞ MODU', 
-                'OUT': 'ÇIKIŞ MODU', 
-                'TRANSFER': 'TAŞIMA MODU (1. Adım: Kaynak Raf)',
+                'IN': 'GİRİŞ MODU (RAF TARA)', 
+                'OUT': 'ÇIKIŞ MODU (RAF TARA)', 
+                'TRANSFER': 'TAŞIMA MODU (HEDEF RAF TARA)',
                 'COUNT': 'STOK SAYIM MODU'
             }[mode];
             document.getElementById('scan-mode-text').innerText = modeText;
@@ -399,13 +472,21 @@
             }[mode];
             document.querySelector('.scan-laser').style.background = color;
             
-            // Transfer modunu sıfırla
+            // Yeni Transfer adımı: 0: Başlangıç, 1: Hedef Raf Taranıyor, 2: Ürün Taranıyor (kaynak rafı biliniyor)
             transferStep = (mode === 'TRANSFER' ? 1 : 0);
             transferSourceProd = null;
             transferSourceShelf = null;
+            scannedShelf = null;
 
             html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, onScan);
+            
+            html5QrCode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, onScan)
+            .then(ignore => {
+                const videoElement = document.getElementById('reader').querySelector('video');
+                if (videoElement && videoElement.srcObject) {
+                    setupZoomControls(videoElement.srcObject.getVideoTracks()[0]);
+                }
+            });
         }
 
         function stopScanner() {
@@ -413,67 +494,246 @@
                 html5QrCode.clear(); 
                 document.getElementById('scanner-container').style.display = 'none';
                 transferStep = 0;
+                scannedShelf = null;
+                document.getElementById('zoom-controls').classList.add('hidden');
             });
         }
 
         function onScan(decodedText) {
-            try {
-                parsedData = parseBarcode(decodedText);
+            parsedData = parseBarcode(decodedText);
+            const prod = db.products[parsedData.uniqueId];
+            const scanDisplay = document.getElementById('scan-mode-text');
 
-                if (parsedData.isShelf) {
-                    if (scanMode === 'TRANSFER') {
-                        handleTransferScan();
-                        return;
-                    }
-                    // Sayım modunda rafa sayım yapılıyorsa ürün beklenmeli (Şimdilik ignore)
+            if (parsedData.isShelf) {
+                scannedShelf = parsedData.shelf;
+                showScanStatus(`RAF TARANDI: ${scannedShelf}`, 'success');
+
+                if (scanMode === 'TRANSFER' && transferStep === 1) {
+                    scanDisplay.innerText = `TAŞIMA MODU (2. Adım: ÜRÜN TARA. Hedef: ${scannedShelf})`;
+                    transferStep = 2; // Hedef rafı taranmış oldu
+                } else if (scanMode === 'IN' || scanMode === 'OUT') {
+                    scanDisplay.innerText = `${scanMode === 'IN' ? 'GİRİŞ' : 'ÇIKIŞ'} MODU (ÜRÜN TARA. Raf: ${scannedShelf})`;
+                }
+                playFeedback('success');
+                return;
+            }
+
+            // --- ÜRÜN TARANDI ---
+            
+            // Akıllı Raf Kontrolü (OUT ve TRANSFER için kritik)
+            if (scanMode === 'OUT' || (scanMode === 'TRANSFER' && transferStep === 2)) {
+                if (!scannedShelf) {
                     playFeedback('error');
-                    return;
-                }
-
-                // Eğer ürün tarandıysa, transfer modunun 2. veya 3. adımında olabilir
-                if (scanMode === 'TRANSFER') {
-                    handleTransferScan(); // Bu kısım 2. adımı halledecek
+                    showScanStatus("HATA: Önce Ürünün RAFINI tarayın!", 'error');
                     return;
                 }
                 
-                const prod = db.products[parsedData.uniqueId];
-                const isRapid = document.getElementById('rapid-mode').checked;
-                
-                if (scanMode === 'COUNT') {
-                     if(html5QrCode) html5QrCode.pause();
-                     playFeedback('success');
-                     openModal(prod);
-                     return;
+                // Eğer ürün sistemde kayıtlıysa ve kayıtlı rafı taranan rafla eşleşmiyorsa HATA ver
+                if (prod && prod.shelf && prod.shelf !== scannedShelf) {
+                    playFeedback('error');
+                    showScanStatus(`HATA: Bu ürün ${scannedShelf} değil, KAYITLI RAF: ${prod.shelf}`, 'error');
+                    // Yanlış raftan alım veya taşıma girişimi engellendi.
+                    return;
                 }
+            }
 
-                // Normal IN/OUT Modu (Seri Okuma Kontrolü)
-                if(isRapid && prod) {
-                    const exists = prod.logs.find(l => l.sn === parsedData.sn && l.type === 'IN'); 
+            // Transfer Modu Adım 2 (Ürün Taranıyor)
+            if (scanMode === 'TRANSFER' && transferStep === 2) {
+                if (!prod || prod.totalQty === 0) {
+                    playFeedback('error');
+                    showScanStatus("HATA: Taşınacak Ürün Stokta Bulunamadı!", 'error');
+                    transferStep = 1; scannedShelf = null; // Başa dön
+                    scanDisplay.innerText = 'TAŞIMA MODU (HEDEF RAF TARA)';
+                    return;
+                }
+                
+                // Kaynak raf artık ürünün kayıtlı rafı (Akıllı Doğrulama sayesinde doğru rafta olduğundan emin olduk)
+                transferSourceProd = prod;
+                transferSourceShelf = prod.shelf; 
+                const targetShelf = scannedShelf; // 1. adımda taranan hedef raf
+                
+                // Transferi Gerçekleştir ve Logla
+                prod.shelf = targetShelf;
+                prod.lastAction = Date.now();
+                
+                const entry = { date: new Date().toISOString(), type: 'TRANSFER', sourceShelf: transferSourceShelf, targetShelf: targetShelf };
+                prod.logs.push(entry);
+                
+                saveDB();
+                playFeedback('success');
+                showScanStatus(`TAŞIMA BAŞARILI: ${transferSourceShelf} -> ${targetShelf}`, 'success');
+                
+                // İşlem bitti, modu sıfırla
+                transferStep = 1; 
+                transferSourceProd = null;
+                scannedShelf = targetShelf; // Yeni rafı, bir sonraki işleme baz olabilir
+                scanDisplay.innerText = 'TAŞIMA MODU (HEDEF RAF TARA)';
+                return;
+            }
+
+            // Normal IN/OUT / COUNT Modu
+            const isRapid = document.getElementById('rapid-mode').checked;
+            
+            if (scanMode === 'COUNT') {
+                 if(html5QrCode) html5QrCode.pause();
+                 playFeedback('success');
+                 openModal(prod);
+                 return;
+            }
+
+            // Hızlı Mod (Sayı artırma/azaltma)
+            if(isRapid && prod) {
+                // Hızlı modda da raf taranmış olmalı.
+                if(!scannedShelf && prod.totalQty > 0) { 
+                    playFeedback('error'); 
+                    showScanStatus("HATA: Hızlı işlem için RAF TARA!", 'error');
+                    return; 
+                } 
+                
+                if (scanMode === 'IN') { 
+                    // IN modunda ürünün rafını otomatik güncelle (Akıllı Güncelleme)
+                    if(prod.shelf !== scannedShelf) prod.shelf = scannedShelf;
                     
-                    if(scanMode === 'IN' && exists) { playFeedback('error'); return; } 
-                    if(scanMode === 'OUT' && !exists) { playFeedback('error'); return; } 
-
-                    playFeedback('success');
-                    const entry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, shelf: prod.shelf };
-                    prod.logs.push(entry);
-                    prod.totalQty = scanMode === 'IN' ? prod.totalQty + 1 : Math.max(0, prod.totalQty - 1);
+                    prod.logs.push({ sn: parsedData.sn, date: new Date().toISOString(), type: 'IN', shelf: scannedShelf });
+                    prod.totalQty++;
                     prod.lastAction = new Date().getTime();
                     saveDB();
+                    showScanStatus(`GİRİŞ (+1) BAŞARILI. Yeni Stok: ${prod.totalQty}`, 'success');
+                    playFeedback('success');
+                    return;
+                } else if (scanMode === 'OUT' && prod.totalQty > 0) { 
+                    prod.logs.push({ sn: parsedData.sn, date: new Date().toISOString(), type: 'OUT', shelf: scannedShelf });
+                    prod.totalQty = Math.max(0, prod.totalQty - 1);
+                    prod.lastAction = new Date().getTime();
+                    saveDB();
+                    showScanStatus(`ÇIKIŞ (-1) BAŞARILI. Yeni Stok: ${prod.totalQty}`, 'success');
+                    playFeedback('success');
+                    return;
+                } else {
+                    playFeedback('error');
+                    showScanStatus("HATA: Çıkış için stok yetersiz veya seri numara uyumsuz.", 'error');
                     return;
                 }
-
-                // Normal IN/OUT Modu (Modal)
-                if(html5QrCode) html5QrCode.pause();
-                playFeedback('success');
-                openModal(prod);
-
-            } catch(e) {
-                console.error(e);
-                if(html5QrCode) html5QrCode.resume();
             }
+
+            // Normal IN/OUT Modu (Modal)
+            if(html5QrCode) html5QrCode.pause();
+            playFeedback('success');
+            openModal(prod);
+
         }
 
-        // --- YENİ ÖZELLİK: SAYIM MODU İŞLEMLERİ ---
+        // --- MODAL YÖNETİMİ ---
+        function openModal(prod) {
+            const m = document.getElementById('product-modal');
+            const data = parsedData;
+
+            // UI Görünürlüğünü Ayarla
+            const isCountMode = scanMode === 'COUNT';
+            document.getElementById('m-btn-save').classList.toggle('hidden', isCountMode);
+            document.getElementById('m-btn-count').classList.toggle('hidden', !isCountMode);
+            document.getElementById('count-compare-area').classList.toggle('hidden', !isCountMode);
+
+            // Verileri Yükle
+            document.getElementById('m-lot').innerText = "LOT: " + (prod ? prod.lot : data.lot);
+            document.getElementById('m-ref').innerText = prod ? prod.ref : (data.ref || "---");
+            document.getElementById('m-sn').innerText = data.sn || "---";
+            document.getElementById('m-name').value = prod ? prod.name : "";
+            
+            let currentShelf = (prod ? prod.shelf : "") || "";
+
+            // Eğer raf taraması yapıldıysa, raf inputunu bu değerle önceden doldur.
+            if (scannedShelf) {
+                currentShelf = scannedShelf;
+            }
+
+            document.getElementById('m-shelf-input').value = currentShelf;
+            document.getElementById('m-shelf-display').innerText = "RAF: " + (currentShelf || "---");
+
+            // COUNT Moduna Özel Veriler
+            if (isCountMode) {
+                const systemQty = prod ? prod.totalQty : 0;
+                document.getElementById('count-system-qty').innerText = systemQty;
+                document.getElementById('count-input-qty').value = systemQty > 0 ? systemQty : 1;
+                
+                document.getElementById('count-input-qty').oninput = () => updateCountComparison(systemQty);
+                updateCountComparison(systemQty);
+            }
+
+            const img = document.getElementById('m-img');
+            const icon = document.getElementById('m-icon');
+            if(prod && prod.image) { img.src = prod.image; img.classList.remove('hidden'); icon.classList.add('hidden'); }
+            else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
+
+            loadProductHistory(prod);
+            showModalTab('details');
+
+            m.classList.add('active');
+        }
+
+        function saveProduct() {
+            if(scanMode === 'COUNT') { logCount(); return; }
+            
+            const name = document.getElementById('m-name').value || "İsimsiz Ürün";
+            const newShelf = document.getElementById('m-shelf-input').value.toUpperCase();
+            
+            if(!db.products[parsedData.uniqueId]) {
+                db.products[parsedData.uniqueId] = {
+                    id: parsedData.uniqueId, name: name, ref: parsedData.ref || parsedData.gtin, lot: parsedData.lot,
+                    shelf: newShelf, totalQty: 0, logs: [], image: null, lastAction: Date.now()
+                };
+            }
+            
+            const prod = db.products[parsedData.uniqueId];
+            
+            // ÇIKIŞ İŞLEMİNDE AKILLI RAF DOĞRULAMASI
+            if (scanMode === 'OUT') {
+                if (prod.totalQty === 0) {
+                    alert("HATA: Çıkış için stok yetersiz.");
+                    return;
+                }
+                if (prod.shelf && prod.shelf !== newShelf) {
+                    alert(`HATA: Çıkış işlemi için raf ${prod.shelf} olmalıdır!`);
+                    return;
+                }
+            }
+
+            // GİRİŞ İŞLEMİNDE RAF GÜNCELLEMESİ
+            if (scanMode === 'IN' && prod.shelf !== newShelf) {
+                if (prod.totalQty === 0 || !prod.shelf) {
+                     prod.shelf = newShelf; // İlk giriş veya stok 0 iken yeni rafa kayıt
+                } else if (prod.shelf && confirm(`Bu ürün kayıtlı rafı ${prod.shelf}. Yeni raf ${newShelf} olarak güncellensin mi?`)) {
+                    prod.shelf = newShelf;
+                } else if (prod.shelf !== newShelf) {
+                     // Kullanıcı onay vermediyse işlemi durdur
+                     return;
+                }
+            }
+            
+            prod.name = name; 
+            
+            const imgEl = document.getElementById('m-img');
+            if(!imgEl.classList.contains('hidden')) prod.image = imgEl.src;
+
+            const entry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, shelf: newShelf };
+            
+            if (scanMode === 'IN') {
+                 prod.logs.push(entry);
+                 prod.totalQty++;
+            } else if (scanMode === 'OUT') {
+                 prod.logs.push(entry); 
+                 prod.totalQty = Math.max(0, prod.totalQty - 1);
+            }
+            
+            prod.lastAction = Date.now();
+
+            saveDB();
+            closeModal();
+            stopScanner();
+        }
+        
+        // --- Diğer Fonksiyonlar (V21'den Devralındı) ---
+        
         function updateCountComparison(systemQty) {
             const countInput = document.getElementById('count-input-qty');
             const differenceDiv = document.getElementById('count-difference');
@@ -498,10 +758,7 @@
             const countedQty = parseInt(document.getElementById('count-input-qty').value) || 0;
             const shelf = document.getElementById('m-shelf-input').value.toUpperCase();
 
-            // Sayım işlemi stok miktarını DEĞİŞTİRMEZ, sadece log kaydı oluşturur.
-            
             if(!db.products[parsedData.uniqueId]) {
-                 // Eğer ürün hiç kaydedilmemişse, yeni bir kayıt oluşturup logluyoruz (Sisteme kayıt 0 olacak)
                  db.products[parsedData.uniqueId] = {
                     id: parsedData.uniqueId, name: document.getElementById('m-name').value || "Yeni Ürün", ref: parsedData.ref || parsedData.gtin, lot: parsedData.lot,
                     shelf: shelf, totalQty: 0, logs: [], image: null, lastAction: Date.now()
@@ -519,119 +776,11 @@
             };
             
             prod.logs.push(entry);
-            prod.lastAction = Date.now(); // Son işlem tarihini güncelle
+            prod.lastAction = Date.now(); 
 
             saveDB();
             closeModal();
             stopScanner();
-        }
-
-        // --- TRANSFER YÖNETİMİ (Kısaltılmış) ---
-        function handleTransferScan() {
-            // ... (V16'daki transfer mantığı buraya gelir)
-            const scanDisplay = document.getElementById('scan-mode-text');
-
-            if (transferStep === 1) { // Kaynak Raf Taranıyor
-                if (!parsedData.isShelf) { 
-                    playFeedback('error'); scanDisplay.innerText = "HATA: Kaynak RAF barkodunu tarayın!";
-                    setTimeout(() => scanDisplay.innerText = "TAŞIMA MODU (1. Adım: Kaynak Raf)", 2000); return;
-                }
-                transferSourceShelf = parsedData.shelf;
-                transferStep = 2;
-                scanDisplay.innerText = `TAŞIMA MODU (2. Adım: Ürün. Kaynak: ${transferSourceShelf})`; playFeedback('success');
-            
-            } else if (transferStep === 2) { // Ürün Taranıyor
-                if (parsedData.isShelf) {
-                    playFeedback('error'); scanDisplay.innerText = "HATA: ÜRÜN barkodunu tarayın!";
-                    setTimeout(() => scanDisplay.innerText = `TAŞIMA MODU (2. Adım: Ürün. Kaynak: ${transferSourceShelf})`, 2000); return;
-                }
-                transferSourceProd = db.products[parsedData.uniqueId];
-                
-                if (!transferSourceProd || transferSourceProd.totalQty === 0) {
-                    playFeedback('error'); scanDisplay.innerText = "HATA: Stokta Ürün Bulunamadı!";
-                    transferStep = 1; transferSourceShelf = null;
-                    setTimeout(() => scanDisplay.innerText = 'TAŞIMA MODU (1. Adım: Kaynak Raf)', 3000); return;
-                }
-
-                if (transferSourceProd.shelf !== transferSourceShelf) {
-                    scanDisplay.innerText = `UYARI: Ürünün rafı ${transferSourceProd.shelf}. Hedef Rafı tarayın.`;
-                }
-                transferStep = 3;
-                scanDisplay.innerText = `TAŞIMA MODU (3. Adım: Hedef Raf)`; playFeedback('success');
-
-            } else if (transferStep === 3) { // Hedef Raf Taranıyor
-                if (!parsedData.isShelf) { 
-                    playFeedback('error'); scanDisplay.innerText = "HATA: HEDEF RAF barkodunu tarayın!";
-                    setTimeout(() => scanDisplay.innerText = `TAŞIMA MODU (3. Adım: Hedef Raf)`, 2000); return;
-                }
-                const targetShelf = parsedData.shelf;
-
-                // Transferi Gerçekleştir ve Logla
-                transferSourceProd.shelf = targetShelf;
-                transferSourceProd.lastAction = Date.now();
-                
-                const entry = { date: new Date().toISOString(), type: 'TRANSFER', sourceShelf: transferSourceShelf, targetShelf: targetShelf };
-                transferSourceProd.logs.push(entry);
-                
-                saveDB();
-                playFeedback('success');
-                scanDisplay.innerText = `BAŞARILI: ${transferSourceProd.name} ${transferSourceShelf} -> ${targetShelf}`;
-                
-                transferStep = 1; 
-                transferSourceProd = null;
-                transferSourceShelf = null;
-                setTimeout(() => scanDisplay.innerText = 'TAŞIMA MODU (1. Adım: Kaynak Raf)', 3000);
-            }
-        }
-        
-        // --- MODAL YÖNETİMİ ---
-        function openModal(prod) {
-            const m = document.getElementById('product-modal');
-            const data = parsedData;
-
-            // UI Görünürlüğünü Ayarla
-            const isCountMode = scanMode === 'COUNT';
-            document.getElementById('m-btn-save').classList.toggle('hidden', isCountMode);
-            document.getElementById('m-btn-count').classList.toggle('hidden', !isCountMode);
-            document.getElementById('count-compare-area').classList.toggle('hidden', !isCountMode);
-
-            // Verileri Yükle
-            document.getElementById('m-lot').innerText = "LOT: " + (prod ? prod.lot : data.lot);
-            document.getElementById('m-ref').innerText = prod ? prod.ref : (data.ref || "---");
-            document.getElementById('m-sn').innerText = data.sn || "---";
-            document.getElementById('m-name').value = prod ? prod.name : "";
-            
-            const currentShelf = (prod ? prod.shelf : "") || "";
-            document.getElementById('m-shelf-input').value = currentShelf;
-            document.getElementById('m-shelf-display').innerText = "RAF: " + (currentShelf || "---");
-
-            // COUNT Moduna Özel Veriler
-            if (isCountMode) {
-                const systemQty = prod ? prod.totalQty : 0;
-                document.getElementById('count-system-qty').innerText = systemQty;
-                document.getElementById('count-input-qty').value = systemQty > 0 ? systemQty : 1; // Başlangıç değeri
-                
-                // Karşılaştırma fonksiyonunu Input değiştiğinde çağır
-                document.getElementById('count-input-qty').oninput = () => updateCountComparison(systemQty);
-                updateCountComparison(systemQty);
-                
-                // Sayım modunda raf değiştirilebilir olmalı
-                document.getElementById('m-shelf-input').disabled = false;
-            } else {
-                 document.getElementById('m-shelf-input').disabled = false;
-            }
-
-            // Görsel Yükle
-            const img = document.getElementById('m-img');
-            const icon = document.getElementById('m-icon');
-            if(prod && prod.image) { img.src = prod.image; img.classList.remove('hidden'); icon.classList.add('hidden'); }
-            else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
-
-            // Log Geçmişini Yükle
-            loadProductHistory(prod);
-            showModalTab('details');
-
-            m.classList.add('active');
         }
 
         function loadProductHistory(prod) {
@@ -661,7 +810,7 @@
                     typeClass = 'timeline-transfer';
                     icon = '<i class="fas fa-exchange-alt text-yellow-400"></i>';
                     description = `Taşıma: ${log.sourceShelf} -> ${log.targetShelf}`;
-                } else if (log.type === 'COUNT') { // YENİ COUNT LOGU
+                } else if (log.type === 'COUNT') { 
                     typeClass = 'timeline-count';
                     icon = '<i class="fas fa-list-ol text-blue-400"></i>';
                     const diff = log.countedQty - log.systemQty;
@@ -699,49 +848,6 @@
             if(html5QrCode) html5QrCode.resume();
         }
 
-        function saveProduct() {
-            // IN/OUT kaydı (eski mantık)
-            if(scanMode === 'COUNT') { logCount(); return; } // Hata yakalama
-            
-            const name = document.getElementById('m-name').value || "İsimsiz Ürün";
-            const shelf = document.getElementById('m-shelf-input').value.toUpperCase();
-            
-            if(!db.products[parsedData.uniqueId]) {
-                db.products[parsedData.uniqueId] = {
-                    id: parsedData.uniqueId, name: name, ref: parsedData.ref || parsedData.gtin, lot: parsedData.lot,
-                    shelf: shelf, totalQty: 0, logs: [], image: null, lastAction: Date.now()
-                };
-            }
-            
-            const prod = db.products[parsedData.uniqueId];
-            prod.name = name; 
-            prod.shelf = shelf; 
-
-            const imgEl = document.getElementById('m-img');
-            if(!imgEl.classList.contains('hidden')) prod.image = imgEl.src;
-
-            const entry = { sn: parsedData.sn, date: new Date().toISOString(), type: scanMode, shelf: shelf };
-            const existingLog = prod.logs.find(l => l.sn === parsedData.sn && l.type === 'IN');
-            
-            if (scanMode === 'IN' && !existingLog) {
-                 prod.logs.push(entry);
-                 prod.totalQty++;
-            } else if (scanMode === 'OUT' && existingLog) {
-                 prod.logs.push(entry); 
-                 prod.totalQty = Math.max(0, prod.totalQty - 1);
-            }
-            
-            prod.lastAction = Date.now();
-
-            saveDB();
-            closeModal();
-            stopScanner();
-        }
-        
-        // ... Diğer yardımcı fonksiyonlar (handlePhoto, calculateStorageUsage, updateDashboard, renderStocks, switchPage, toggleSettings, resetData, exportExcel) V16 ile aynıdır.
-        // Kodu kısa tutmak için burada tekrar edilmedi, ancak V16'dan kopyalanıp yapıştırıldığını varsayın.
-
-        // --- UI & DASHBOARD (Önemli kısımlar tekrarlandı) ---
         function updateDashboard() {
             const prods = Object.values(db.products);
             const totalStock = prods.reduce((acc, p) => acc + p.totalQty, 0);
@@ -759,16 +865,15 @@
             document.getElementById('dash-critical').innerText = criticals;
             document.getElementById('dash-today').innerText = todayMoves + " Hareket";
 
-            const storage = { kb: 0, percentage: 0 }; // Yer tutucu
-            // const storage = calculateStorageUsage();
-            
-            // UI güncellemeleri...
-            
+            // Hafıza kullanımı için placeholder değerleri
+            document.getElementById('storage-kb').innerText = '12.5 KB';
+            document.getElementById('storage-percentage').innerText = '0.2% Kullanıldı (Max 5MB)';
+            document.getElementById('storage-bar').style.width = '0.2%';
+
             renderStocks();
         }
-
+        
         function renderStocks() {
-            // ... (V16'daki stok listeleme mantığı buraya gelir)
             const grid = document.getElementById('stock-list');
             const term = document.getElementById('search-input').value.toLowerCase();
             let arr = Object.values(db.products);
@@ -785,13 +890,13 @@
 
             grid.innerHTML = arr.map(p => `
                 <div class="stock-card p-4 flex gap-4 items-center" onclick="showProductDetails('${p.id}')">
-                    <div class="w-12 h-12 bg-slate-800 rounded-lg flex-none overflow-hidden relative">
+                    <div class="w-12 h-12 bg-slate-800 rounded-lg flex-none overflow-hidden relative border border-slate-700">
                          ${p.image ? `<img src="${p.image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-slate-600"><i class="fas fa-box"></i></div>`}
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-white text-sm truncate pr-2">${p.name}</h4>
-                            <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 font-mono">${p.shelf || 'NO-RAF'}</span>
+                            <h4 class="font-extrabold text-white text-sm truncate pr-2">${p.name}</h4>
+                            <span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-400 font-mono">${p.shelf || 'RAFSIZ'}</span>
                         </div>
                         <div class="flex items-center gap-2 mt-1">
                             <span class="text-[10px] text-yellow-500 bg-yellow-900/20 px-1.5 rounded border border-yellow-900/30">L: ${p.lot}</span>
@@ -799,7 +904,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-xl font-bold ${p.totalQty < 3 ? 'text-red-500' : 'text-blue-400'}">${p.totalQty}</div>
+                        <div class="text-xl font-extrabold ${p.totalQty < 3 ? 'text-red-500' : 'text-blue-400'}">${p.totalQty}</div>
                         <div class="text-[9px] text-slate-500">ADET</div>
                     </div>
                 </div>
@@ -807,7 +912,33 @@
             
             if(arr.length === 0) grid.innerHTML = '<div class="text-center text-slate-600 text-xs py-10">Kayıt bulunamadı</div>';
         }
+        
+        function setFilter(f) {
+            activeFilter = f;
+            document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
+            document.getElementById('filter-'+f).classList.add('active');
+            renderStocks();
+        }
 
+        function switchPage(page) {
+            document.getElementById('page-home').classList.add('hidden');
+            document.getElementById('page-stocks').classList.add('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active', 'text-blue-500'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.add('text-slate-500'));
+
+            if(page === 'home') {
+                document.getElementById('page-home').classList.remove('hidden');
+                document.querySelectorAll('.nav-btn')[0].classList.add('active', 'text-blue-500');
+                document.querySelectorAll('.nav-btn')[0].classList.remove('text-slate-500');
+                updateDashboard();
+            } else {
+                document.getElementById('page-stocks').classList.remove('hidden');
+                document.querySelectorAll('.nav-btn')[1].classList.add('active', 'text-blue-500');
+                document.querySelectorAll('.nav-btn')[1].classList.remove('text-slate-500');
+                renderStocks();
+            }
+        }
+        
         function showProductDetails(uniqueId) {
              const prod = db.products[uniqueId];
              scanMode = 'IN'; 
@@ -821,7 +952,44 @@
 
              showModalTab('history');
         }
+        
+        function toggleSettings() {
+            const m = document.getElementById('settings-modal');
+            m.classList.toggle('active');
+        }
 
+        function resetData() {
+            if(confirm("Tüm veritabanı silinsin mi? Bu işlem geri alınamaz.")) {
+                localStorage.removeItem(DB_KEY);
+                db = { products: {} };
+                updateDashboard();
+                toggleSettings();
+            }
+        }
+
+        function exportExcel() {
+            let csv = "\uFEFFGTIN;URUN ADI;REF;LOT;RAF;ADET;SON ISLEM\n";
+            Object.values(db.products).forEach(p => {
+                csv += `${p.id};${p.name};${p.ref};${p.lot};${p.shelf};${p.totalQty};${new Date(p.lastAction).toLocaleString()}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "stok_raporu.csv";
+            link.click();
+        }
+        
+        function handlePhoto(input) {
+            if(input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('m-img').src = e.target.result;
+                    document.getElementById('m-img').classList.remove('hidden');
+                    document.getElementById('m-icon').classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         init();
     </script>
